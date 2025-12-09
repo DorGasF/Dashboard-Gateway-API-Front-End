@@ -4,7 +4,7 @@ import type { Routes } from '@/@types/routes'
 const landingRoute: Routes = [
     {
         key: 'landing',
-        path: `/landing`,
+        path: `/`,
         component: lazy(() => import('@/views/others/Landing')),
         authority: [],
     },
