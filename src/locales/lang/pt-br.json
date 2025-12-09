@@ -8,15 +8,15 @@
             "project": "Projeto",
             "marketing": "Marketing"
         },
-        "concepts": "Conceitos",
+        "concepts": "Operações",
         "conceptsAi": {
             "ai": "IA",
             "chat": "Chat",
             "image": "Imagem"
         },
         "conceptsCustomers": {
-            "customers": "Cliente",
-            "customerList": "Lista",
+            "customers": "Meus Clientes",
+            "customerList": "Clientes",
             "customerEdit": "Editar",
             "customerCreate": "Criar",
             "customerDetails": "Detalhes"
@@ -36,8 +36,8 @@
             "projectIssue": "Problema"
         },
         "conceptsOrders": {
-            "orders": "Pedidos",
-            "orderList": "Lista",
+            "orders": "Cobranças",
+            "orderList": "Todos os Pedidos",
             "orderEdit": "Editar",
             "orderDetails": "Detalhes",
             "orderCreate": "Criar"
@@ -47,7 +47,7 @@
             "settings": "Configurações",
             "activityLog": "Registro de Atividades",
             "pricing": "Preços",
-            "rolesPermissions": "Papéis e Permissões"
+            "rolesPermissions": "Usuários e Permissões"
         },
         "conceptsHelpCenter": {
             "helpCenter": "Central de Ajuda",

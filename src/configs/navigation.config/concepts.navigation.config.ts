@@ -55,57 +55,6 @@ const conceptsNavigationConfig: NavigationTree[] = [
                         },
                         subMenu: [],
                     },
-                    {
-                        key: 'concepts.customers.customerEdit',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-edit/1`,
-                        title: 'Customer Edit',
-                        translateKey: 'nav.conceptsCustomers.customerEdit',
-                        icon: 'customerEdit',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerEditDesc',
-                                label: 'Edit customer info',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.customers.customerCreate',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-create`,
-                        title: 'Customer Create',
-                        translateKey: 'nav.conceptsCustomers.customerCreate',
-                        icon: 'customerCreate',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerCreateDesc',
-                                label: 'Add a new customer',
-                            },
-                        },
-                        subMenu: [],
-                    },
-                    {
-                        key: 'concepts.customers.customerDetails',
-                        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/1`,
-                        title: 'Customer Details',
-                        translateKey: 'nav.conceptsCustomers.customerDetails',
-                        icon: 'customerDetails',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [ADMIN, USER],
-                        meta: {
-                            description: {
-                                translateKey:
-                                    'nav.conceptsCustomers.customerDetailsDesc',
-                                label: 'Detailed customer info',
-                            },
-                        },
-                        subMenu: [],
-                    },
                 ],
             },
             {
