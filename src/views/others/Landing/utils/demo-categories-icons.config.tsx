@@ -14,7 +14,7 @@ export type ComponentIcons = Record<string, React.ReactNode>
 
 const componentsIcon: ComponentIcons = {
     all: <PiSquaresFourDuotone />,
-    ecommerce: <PiShoppingCartSimpleDuotone />,
+    summary: <PiShoppingCartSimpleDuotone />,
     project: <PiProjectorScreenChartDuotone />,
     marketing: <PiMegaphoneDuotone />,
     ai: <PiSparkleDuotone />,

@@ -68,7 +68,7 @@ export type Order = {
     totalAmount: number
 }
 
-export type GetEcommerceDashboardResponse = {
+export type GetSummaryDashboardResponse = {
     statisticData: StatisticData
     recentOrders: Order[]
     salesTarget: SalesTargetData

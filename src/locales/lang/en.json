@@ -1,8 +1,9 @@
 {
     "nav": {
         "dashboard": {
+            "summary": "Summary",
             "dashboard": "Dashboard",
-            "ecommerce": "Ecommerce",
+            "5r": "Summary",
             "analytic": "Analytic",
             "project": "Project",
             "marketing": "Marketing"

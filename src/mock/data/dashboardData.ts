@@ -2,7 +2,7 @@ import { taskBugFix } from './projectsData'
 
 const currentDate = new Date()
 
-export const eCommerceData = {
+export const SummaryData = {
     statisticData: {
         totalProfit: {
             thisWeek: {

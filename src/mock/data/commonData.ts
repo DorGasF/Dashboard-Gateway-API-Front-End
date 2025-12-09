@@ -84,10 +84,10 @@ export const notificationListData = [
 
 export const searchQueryPoolData = [
     {
-        key: 'dashboard.ecommerce',
-        path: `${DASHBOARDS_PREFIX_PATH}/ecommerce`,
-        title: 'Ecommerce',
-        icon: 'dashboardEcommerce',
+        key: 'dashboard.summary',
+        path: `${DASHBOARDS_PREFIX_PATH}/summary`,
+        title: 'Summary',
+        icon: 'dashboardSummary',
         category: 'Dashboard',
         categoryTitle: 'Dashboard',
     },

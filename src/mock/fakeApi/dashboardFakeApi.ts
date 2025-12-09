@@ -1,13 +1,13 @@
 import { mock } from '../MockAdapter'
 import {
-    eCommerceData,
+    SummaryData,
     projectData,
     analyticsData,
     marketingData,
 } from '../data/dashboardData'
 
-mock.onGet(`/api/dashboard/ecommerce`).reply(() => {
-    return [200, eCommerceData]
+mock.onGet(`/api/dashboard/summary`).reply(() => {
+    return [200, SummaryData]
 })
 
 mock.onGet(`/api/dashboard/project`).reply(() => {

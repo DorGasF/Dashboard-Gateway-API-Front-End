@@ -4,7 +4,7 @@ import Container from './LandingContainer'
 import demoCategoriesIcons from '../utils/demo-categories-icons.config'
 import {
     allDemos,
-    ecommerceDemos,
+    summaryDemos,
     aiDemos,
     helpCenterDemos,
     accountDemos,
@@ -28,7 +28,7 @@ const demoList: Record<
     }[]
 > = {
     all: allDemos,
-    ecommerce: ecommerceDemos,
+    summary: summaryDemos,
     ai: aiDemos,
     helpCenter: helpCenterDemos,
     accounts: accountDemos,
@@ -41,8 +41,8 @@ const tabList = [
         name: 'Dashboard',
     },
     {
-        id: 'ecommerce',
-        name: 'Ecommerce',
+        id: 'summary',
+        name: 'Summary',
     },
     {
         id: 'ai',
@@ -143,7 +143,7 @@ const Demos = ({ mode }: DemoProps) => {
     const navigate = useNavigate()
 
     const handleViewAllDemos = () => {
-        navigate('/dashboards/ecommerce')
+        navigate('/dashboards/summary')
     }
 
     return (

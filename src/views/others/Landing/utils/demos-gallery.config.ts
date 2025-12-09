@@ -1,16 +1,16 @@
 export const allDemos = [
     {
-        id: 'dashboardEcommerce',
-        name: 'Ecommerce',
-        path: '/dashboards/ecommerce',
+        id: 'dashboardSummary',
+        name: 'Summary',
+        path: '/dashboards/summary',
     },
 ]
 
-export const ecommerceDemos = [
+export const summaryDemos = [
     {
-        id: 'dashboardEcommerce',
+        id: 'dashboardSummary',
         name: 'Dashboard',
-        path: '/dashboards/ecommerce',
+        path: '/dashboards/summary',
     },
     {
         id: 'orderCreate',

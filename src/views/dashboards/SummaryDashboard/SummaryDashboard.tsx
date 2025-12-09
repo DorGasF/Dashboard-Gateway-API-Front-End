@@ -5,14 +5,14 @@ import RecentOrder from './components/RecentOrder'
 import SalesTarget from './components/SalesTarget'
 import TopProduct from './components/TopProduct'
 import RevenueByChannel from './components/RevenueByChannel'
-import { apiGetEcommerceDashboard } from '@/services/DashboardService'
+import { apiGetSummaryDashboard } from '@/services/DashboardService'
 import useSWR from 'swr'
-import type { GetEcommerceDashboardResponse } from './types'
+import type { GetSummaryDashboardResponse } from './types'
 
 const SalesDashboard = () => {
     const { data, isLoading } = useSWR(
-        ['/api/dashboard/ecommerce'],
-        () => apiGetEcommerceDashboard<GetEcommerceDashboardResponse>(),
+        ['/api/dashboard/summary'],
+        () => apiGetSummaryDashboard<GetSummaryDashboardResponse>(),
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
