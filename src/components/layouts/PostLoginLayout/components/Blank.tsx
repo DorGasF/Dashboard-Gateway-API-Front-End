@@ -6,9 +6,9 @@ const Blank = ({ children }: CommonProps) => {
     return (
         <LayoutBase
             type={LAYOUT_BLANK}
-            className="app-layout-blank flex flex-auto flex-col h-[100vh]"
+            className="app-layout-blank min-h-[100vh] w-full"
         >
-            <div className="flex min-w-0 w-full flex-1">{children}</div>
+            {children}
         </LayoutBase>
     )
 }
