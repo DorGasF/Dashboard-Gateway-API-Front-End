@@ -32,10 +32,7 @@ export const SignInBase = ({
                 />
             </div>
             <div className="mb-10">
-                <h2 className="mb-2">Welcome back!</h2>
-                <p className="font-semibold heading-text">
-                    Please enter your credentials to sign in!
-                </p>
+                <h2 className="mb-2">Sign in to your Raims account</h2>
             </div>
             {message && (
                 <Alert showIcon className="mb-4" type="danger">
@@ -49,7 +46,7 @@ export const SignInBase = ({
                     <div className="mb-7 mt-2">
                         <ActionLink
                             to={forgetPasswordUrl}
-                            className="font-semibold heading-text mt-2 underline"
+                            className="font-semibold heading-text mt-2"
                             themeColor={false}
                         >
                             Forgot password
