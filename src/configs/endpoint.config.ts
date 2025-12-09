@@ -1,7 +1,5 @@
-export const apiPrefix = '/api'
-
 const endpointConfig = {
-    signIn: '/sign-in',
+    signIn: '/v1/auth/login',
     signOut: '/sign-out',
     signUp: '/sign-up',
     forgotPassword: '/forgot-password',

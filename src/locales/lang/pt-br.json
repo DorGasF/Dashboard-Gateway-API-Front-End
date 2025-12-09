@@ -144,7 +144,17 @@
             "otpVerification": "Verificação OTP",
             "otpVerificationSimple": "Simples",
             "otpVerificationSide": "Lateral",
-            "otpVerificationSplit": "Dividido"
+            "otpVerificationSplit": "Dividido",
+            "title": "Entre na sua conta Raims",
+            "orContinue": "ou continue com",
+            "noAccount": "Não tem uma conta ainda?",
+            "email": "Email",
+            "password": "Senha",
+            "enterEmail": "Digite seu email",
+            "enterPassword": "Digite sua senha",
+            "signInButton": "Entrar",
+            "signingIn": "Entrando...",
+            "rememberMe": "Lembrar de mim neste dispositivo"
         },
         "others": {
             "others": "Outros",

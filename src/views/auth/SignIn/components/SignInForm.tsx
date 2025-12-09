@@ -8,6 +8,8 @@ import { useAuth } from '@/auth'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
+import Checkbox from '@/components/ui/Checkbox'
 import type { CommonProps } from '@/@types/common'
 import type { ReactNode } from 'react'
 
@@ -20,19 +22,24 @@ interface SignInFormProps extends CommonProps {
 type SignInFormSchema = {
     email: string
     password: string
+    remember: boolean
 }
 
-const validationSchema = z.object({
-    email: z
-        .string()
-        .min(1, { message: 'Please enter your email' }),
-    password: z
-        .string()
-        .min(1, { message: 'Please enter your password' }),
-})
-
 const SignInForm = (props: SignInFormProps) => {
-    const [isSubmitting, setSubmitting] = useState<boolean>(false)
+    const { t } = useTranslation()
+
+    const validationSchema = z.object({
+        email: z
+            .string()
+            .min(1, { message: t('nav.authentication.enterEmail') })
+            .email({ message: t('nav.authentication.enterEmail') }),
+        password: z
+            .string()
+            .min(1, { message: t('nav.authentication.enterPassword') }),
+        remember: z.boolean(),
+    })
+
+    const [isSubmitting, setSubmitting] = useState(false)
 
     const { disableSubmit = false, className, setMessage, passwordHint } = props
 
@@ -42,8 +49,9 @@ const SignInForm = (props: SignInFormProps) => {
         control,
     } = useForm<SignInFormSchema>({
         defaultValues: {
-            email: 'admin-01@ecme.com',
-            password: '123Qwe',
+            email: '',
+            password: '',
+            remember: true,
         },
         resolver: zodResolver(validationSchema),
     })
@@ -51,12 +59,16 @@ const SignInForm = (props: SignInFormProps) => {
     const { signIn } = useAuth()
 
     const onSignIn = async (values: SignInFormSchema) => {
-        const { email, password } = values
+        const { email, password, remember } = values
 
         if (!disableSubmit) {
             setSubmitting(true)
 
-            const result = await signIn({ email, password })
+            const result = await signIn({
+                email,
+                password,
+                remember: remember ? '1' : '0',
+            })
 
             if (result?.status === 'failed') {
                 setMessage?.(result.message)
@@ -70,8 +82,8 @@ const SignInForm = (props: SignInFormProps) => {
         <div className={className}>
             <Form onSubmit={handleSubmit(onSignIn)}>
                 <FormItem
-                    label="Email"
-                    invalid={Boolean(errors.email)}
+                    label={t('nav.authentication.email')}
+                    invalid={!!errors.email}
                     errorMessage={errors.email?.message}
                 >
                     <Controller
@@ -80,16 +92,17 @@ const SignInForm = (props: SignInFormProps) => {
                         render={({ field }) => (
                             <Input
                                 type="email"
-                                placeholder="Email"
+                                placeholder={t('nav.authentication.email')}
                                 autoComplete="off"
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
+
                 <FormItem
-                    label="Password"
-                    invalid={Boolean(errors.password)}
+                    label={t('nav.authentication.password')}
+                    invalid={!!errors.password}
                     errorMessage={errors.password?.message}
                     className={classNames(
                         passwordHint ? 'mb-0' : '',
@@ -99,25 +112,43 @@ const SignInForm = (props: SignInFormProps) => {
                     <Controller
                         name="password"
                         control={control}
-                        rules={{ required: true }}
                         render={({ field }) => (
                             <PasswordInput
                                 type="text"
-                                placeholder="Password"
+                                placeholder={t('nav.authentication.password')}
                                 autoComplete="off"
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
+
+                <FormItem className="mt-3">
+                    <Controller
+                        name="remember"
+                        control={control}
+                        render={({ field }) => (
+                            <Checkbox
+                                checked={field.value}
+                                onChange={field.onChange}
+                            >
+                                {t('nav.authentication.rememberMe')}
+                            </Checkbox>
+                        )}
+                    />
+                </FormItem>
+
                 {passwordHint}
+
                 <Button
                     block
                     loading={isSubmitting}
                     variant="solid"
                     type="submit"
                 >
-                    {isSubmitting ? 'Signing in...' : 'Sign In'}
+                    {isSubmitting
+                        ? t('nav.authentication.signingIn')
+                        : t('nav.authentication.signInButton')}
                 </Button>
             </Form>
         </div>

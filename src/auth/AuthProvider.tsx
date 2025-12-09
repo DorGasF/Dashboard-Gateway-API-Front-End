@@ -77,23 +77,33 @@ function AuthProvider({ children }: AuthProviderProps) {
     const signIn = async (values: SignInCredential): AuthResult => {
         try {
             const resp = await apiSignIn(values)
-            if (resp) {
-                handleSignIn({ accessToken: resp.token }, resp.user)
-                redirect()
+
+            if (!resp?.data) {
                 return {
-                    status: 'success',
-                    message: '',
+                    status: 'failed',
+                    message: resp?.message?.message || 'Erro ao fazer login',
                 }
             }
+
+            handleSignIn({ accessToken: resp.data.accessToken }, resp.data.user)
+
+            redirect()
+
             return {
-                status: 'failed',
-                message: 'Unable to sign in',
+                status: 'success',
+                message: resp.message.message,
             }
-            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        } catch (errors: any) {
+        } catch (error: any) {
+            if (error?.message?.message) {
+                return {
+                    status: 'failed',
+                    message: error.message.message,
+                }
+            }
+
             return {
                 status: 'failed',
-                message: errors?.response?.data?.message || errors.toString(),
+                message: 'Erro inesperado.',
             }
         }
     }
