@@ -3,7 +3,6 @@ import {
     UI_COMPONENTS_PREFIX_PATH,
     DASHBOARDS_PREFIX_PATH,
     CONCEPTS_PREFIX_PATH,
-    GUIDE_PREFIX_PATH,
 } from '@/constants/route.constant'
 
 export const notificationListData = [

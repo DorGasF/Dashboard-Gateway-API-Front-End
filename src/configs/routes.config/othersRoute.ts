@@ -23,6 +23,7 @@ const othersRoute: Routes = [
             footer: false,
             pageContainerType: 'gutterless',
             pageBackgroundType: 'plain',
+            allowAuthenticated: true,
         },
     },
 ]
