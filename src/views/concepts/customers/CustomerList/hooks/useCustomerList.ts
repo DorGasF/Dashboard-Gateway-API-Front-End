@@ -4,6 +4,24 @@ import { useCustomerListStore } from '../store/customerListStore'
 import type { GetCustomersListResponse } from '../types'
 import type { TableQueries } from '@/@types/common'
 
+function buildQueryParams(tableData: TableQueries) {
+    const params: any = {
+        pageIndex: tableData.pageIndex,
+        pageSize: tableData.pageSize,
+        query: tableData.query,
+    }
+
+    if (tableData.sort?.key) {
+        params['sort[key]'] = tableData.sort.key
+    }
+
+    if (tableData.sort?.order) {
+        params['sort[order]'] = tableData.sort.order
+    }
+
+    return params
+}
+
 export default function useCustomerList() {
     const {
         tableData,
@@ -15,23 +33,18 @@ export default function useCustomerList() {
         setFilterData,
     } = useCustomerListStore((state) => state)
 
+    const swrKey = ['/api/customers', buildQueryParams(tableData)]
+
     const { data, error, isLoading, mutate } = useSWR(
-        ['/api/customers', { ...tableData, ...filterData }],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        swrKey,
         ([_, params]) =>
             apiGetCustomersList<GetCustomersListResponse, TableQueries>(params),
-        {
-            revalidateOnFocus: false,
-        },
+        { revalidateOnFocus: false },
     )
 
-    const customerList = data?.list || []
-
-    const customerListTotal = data?.total || 0
-
     return {
-        customerList,
-        customerListTotal,
+        customerList: data?.data?.list || [],
+        customerListTotal: data?.data?.total || 0,
         error,
         isLoading,
         tableData,

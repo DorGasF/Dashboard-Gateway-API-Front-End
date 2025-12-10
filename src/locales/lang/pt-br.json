@@ -14,11 +14,14 @@
             "chat": "Chat",
             "image": "Imagem"
         },
+        "search": {
+            "quick": "Busca rápida..."
+        },
         "conceptsCustomers": {
             "customers": "Meus Clientes",
             "customerList": "Clientes",
             "customerEdit": "Editar",
-            "customerCreate": "Criar",
+            "customerCreate": "Criar Cliente",
             "customerDetails": "Detalhes"
         },
         "conceptsProducts": {
@@ -90,6 +93,15 @@
             "timeline": "Linha do Tempo",
             "tooltip": "Tooltip"
         },
+        "table": {
+            "identifier": "Identificador",
+            "name": "Nome",
+            "email": "Email",
+            "taxId": "Documento",
+            "totalSpending": "Total Gasto",
+            "edit": "Editar",
+            "view": "Visualizar"
+        },
         "uiComponentsForms": {
             "forms": "Formulários",
             "checkbox": "Caixa de Seleção",
@@ -112,6 +124,10 @@
             "pagination": "Paginação",
             "steps": "Passos",
             "tabs": "Abas"
+        },
+        "pagination": {
+            "itemsPerPage": "Itens por página",
+            "noData": "Nenhum dado encontrado"
         },
         "uiComponentsGraph": {
             "graph": "Gráficos",

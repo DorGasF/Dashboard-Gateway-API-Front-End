@@ -6,6 +6,7 @@ import useCustomerList from '../hooks/useCustomerList'
 import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbPencil, TbEye } from 'react-icons/tb'
+import { useTranslation } from 'react-i18next'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { Customer } from '../types'
 import type { TableQueries } from '@/@types/common'
@@ -35,9 +36,11 @@ const ActionColumn = ({
     onEdit: () => void
     onViewDetail: () => void
 }) => {
+    const { t } = useTranslation()
+
     return (
         <div className="flex items-center gap-3">
-            <Tooltip title="Edit">
+            <Tooltip title={t('nav.table.edit')}>
                 <div
                     className={`text-xl cursor-pointer select-none font-semibold`}
                     role="button"
@@ -46,7 +49,7 @@ const ActionColumn = ({
                     <TbPencil />
                 </div>
             </Tooltip>
-            <Tooltip title="View">
+            <Tooltip title={t('nav.table.view')}>
                 <div
                     className={`text-xl cursor-pointer select-none font-semibold`}
                     role="button"
@@ -61,6 +64,7 @@ const ActionColumn = ({
 
 const CustomerListTable = () => {
     const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const {
         customerList,
@@ -84,27 +88,31 @@ const CustomerListTable = () => {
     const columns: ColumnDef<Customer>[] = useMemo(
         () => [
             {
-                header: 'identifier',
+                header: t('nav.table.identifier'),
                 accessorKey: 'id',
+                enableSorting: false,
             },
             {
-                header: 'Name',
+                header: t('nav.table.name'),
                 accessorKey: 'name',
+                enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original
                     return <NameColumn row={row} />
                 },
             },
             {
-                header: 'Email',
+                header: t('nav.table.email'),
                 accessorKey: 'email',
+                enableSorting: false,
             },
             {
-                header: 'tax id',
+                header: t('nav.table.taxId'),
                 accessorKey: 'taxId',
+                enableSorting: false,
             },
             {
-                header: 'Total Spending',
+                header: t('nav.table.totalSpending'),
                 accessorKey: 'totalSpending',
                 cell: (props) => {
                     return <span>${props.row.original.totalSpending}</span>
@@ -113,6 +121,7 @@ const CustomerListTable = () => {
             {
                 header: '',
                 id: 'action',
+                enableSorting: false,
                 cell: (props) => (
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original)}
@@ -123,8 +132,7 @@ const CustomerListTable = () => {
                 ),
             },
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [],
+        [t],
     )
 
     const handleSetTableData = (data: TableQueries) => {

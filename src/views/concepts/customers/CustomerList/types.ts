@@ -40,8 +40,15 @@ type Subscription = {
 }
 
 export type GetCustomersListResponse = {
-    list: Customer[]
-    total: number
+    message: {
+        code: string
+        type: string
+        message: string
+    }
+    data: {
+        list: Customer[]
+        total: number
+    }
 }
 
 export type Filter = {
