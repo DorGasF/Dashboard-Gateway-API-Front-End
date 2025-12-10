@@ -1,10 +1,16 @@
-export function wrapApiError(code: string, message: string, backend: any = null) {
+export function wrapApiError(code: string, msg: string, backend: any = null) {
+    let text = msg
+
+    if (backend?.message?.message) {
+        text = backend.message.message
+    }
+
     return {
         message: {
             code,
-            type: "error",
-            message
+            type: 'error',
+            message: text,
         },
-        data: backend
+        data: backend,
     }
 }

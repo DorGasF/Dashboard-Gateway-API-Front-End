@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import Avatar from '@/components/ui/Avatar'
 import Tag from '@/components/ui/Tag'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
@@ -19,7 +18,6 @@ const statusColor: Record<string, string> = {
 const NameColumn = ({ row }: { row: Customer }) => {
     return (
         <div className="flex items-center">
-            <Avatar size={40} shape="circle" src={row.img} />
             <Link
                 className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
                 to={`/concepts/customers/customer-details/${row.id}`}
@@ -86,6 +84,10 @@ const CustomerListTable = () => {
     const columns: ColumnDef<Customer>[] = useMemo(
         () => [
             {
+                header: 'identifier',
+                accessorKey: 'id',
+            },
+            {
                 header: 'Name',
                 accessorKey: 'name',
                 cell: (props) => {
@@ -98,25 +100,11 @@ const CustomerListTable = () => {
                 accessorKey: 'email',
             },
             {
-                header: 'location',
-                accessorKey: 'personalInfo.location',
+                header: 'tax id',
+                accessorKey: 'taxId',
             },
             {
-                header: 'Status',
-                accessorKey: 'status',
-                cell: (props) => {
-                    const row = props.row.original
-                    return (
-                        <div className="flex items-center">
-                            <Tag className={statusColor[row.status]}>
-                                <span className="capitalize">{row.status}</span>
-                            </Tag>
-                        </div>
-                    )
-                },
-            },
-            {
-                header: 'Spent',
+                header: 'Total Spending',
                 accessorKey: 'totalSpending',
                 cell: (props) => {
                     return <span>${props.row.original.totalSpending}</span>
@@ -184,8 +172,6 @@ const CustomerListTable = () => {
             columns={columns}
             data={customerList}
             noData={!isLoading && customerList.length === 0}
-            skeletonAvatarColumns={[0]}
-            skeletonAvatarProps={{ width: 28, height: 28 }}
             loading={isLoading}
             pagingData={{
                 total: customerListTotal,

@@ -56,6 +56,7 @@ export type Customer = {
     lastName: string
     email: string
     img: string
+    taxId: string
     role: string
     lastOnline: number
     status: string
@@ -63,5 +64,5 @@ export type Customer = {
     orderHistory: OrderHistory[]
     paymentMethod: PaymentMethod[]
     subscription: Subscription[]
-    totalSpending: number
+    totalSpending: string
 }

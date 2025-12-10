@@ -78,32 +78,31 @@ function AuthProvider({ children }: AuthProviderProps) {
         try {
             const resp = await apiSignIn(values)
 
-            if (!resp?.data) {
+            const message = resp?.message?.message ?? 'Error when logging in'
+            const token = resp?.data?.accessToken || null
+            const user = resp?.data?.user || null
+
+            if (!token) {
                 return {
                     status: 'failed',
-                    message: resp?.message?.message || 'Erro ao fazer login',
+                    message,
                 }
             }
 
-            handleSignIn({ accessToken: resp.data.accessToken }, resp.data.user)
-
+            handleSignIn({ accessToken: token }, user || undefined)
             redirect()
 
             return {
                 status: 'success',
-                message: resp.message.message,
+                message,
             }
         } catch (error: any) {
-            if (error?.message?.message) {
-                return {
-                    status: 'failed',
-                    message: error.message.message,
-                }
-            }
+            const backendMsg =
+                error?.message?.message ?? error?.message ?? 'Unexpected error.'
 
             return {
                 status: 'failed',
-                message: 'Erro inesperado.',
+                message: backendMsg,
             }
         }
     }
