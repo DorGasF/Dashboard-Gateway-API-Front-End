@@ -68,7 +68,29 @@
                 caret-color: transparent;
         }
 
-        :where(input, textarea, select, button, [contenteditable]) {
+        /*
+         * Limit the caret to elements that actually accept text input. This keeps
+         * clickable elements such as buttons from showing a blinking cursor.
+         */
+        :where(
+                textarea,
+                input:is(
+                        [type=text],
+                        [type=search],
+                        [type=email],
+                        [type=number],
+                        [type=password],
+                        [type=tel],
+                        [type=url],
+                        [type=date],
+                        [type=datetime-local],
+                        [type=month],
+                        [type=time],
+                        [type=week]
+                ),
+                select,
+                [contenteditable]
+        ) {
                 caret-color: auto;
         }
 
