@@ -59,11 +59,46 @@
 }
 
 @layer base {
-	*,
-	::after,
-	::before,
-	::backdrop,
-	::file-selector-button {
+
+        /*
+         * Prevent the text caret from appearing on non-editable elements.
+         * Re-enable it for actual form controls and editable regions only.
+         */
+        :where(*) {
+                caret-color: transparent;
+        }
+
+        /*
+         * Limit the caret to elements that actually accept text input. This keeps
+         * clickable elements such as buttons from showing a blinking cursor.
+         */
+        :where(
+                textarea,
+                input:is(
+                        [type=text],
+                        [type=search],
+                        [type=email],
+                        [type=number],
+                        [type=password],
+                        [type=tel],
+                        [type=url],
+                        [type=date],
+                        [type=datetime-local],
+                        [type=month],
+                        [type=time],
+                        [type=week]
+                ),
+                select,
+                [contenteditable]
+        ) {
+                caret-color: auto;
+        }
+
+        *,
+        ::after,
+        ::before,
+        ::backdrop,
+        ::file-selector-button {
 		border-color: var(--color-gray-200, currentColor);
 	}
 
