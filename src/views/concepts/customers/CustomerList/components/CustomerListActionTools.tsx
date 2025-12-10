@@ -1,22 +1,31 @@
+import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import { TbUserPlus } from 'react-icons/tb'
-import { useNavigate } from 'react-router'
-import { useTranslation } from 'react-i18next'
+import CreateCustomerDialog from '@/views/customers/CreateCustomerDialog'
 
 const CustomerListActionTools = () => {
-    const navigate = useNavigate()
-    const { t } = useTranslation()
+    const [open, setOpen] = useState(false)
+
+    const handleCreate = (data: any) => {
+        console.log('Criado com sucesso:', data)
+    }
 
     return (
-        <div className="flex flex-col md:flex-row gap-3">
+        <>
             <Button
                 variant="solid"
                 icon={<TbUserPlus className="text-xl" />}
-                onClick={() => navigate('/concepts/customers/customer-create')}
+                onClick={() => setOpen(true)}
             >
-                {t('nav.conceptsCustomers.customerCreate')}
+                Cadastrar Cliente
             </Button>
-        </div>
+
+            <CreateCustomerDialog
+                open={open}
+                onClose={() => setOpen(false)}
+                onCreate={handleCreate}
+            />
+        </>
     )
 }
 

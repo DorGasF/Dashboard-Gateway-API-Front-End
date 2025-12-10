@@ -21,7 +21,7 @@
             "customers": "Meus Clientes",
             "customerList": "Clientes",
             "customerEdit": "Editar",
-            "customerCreate": "Criar Cliente",
+            "customerCreate": "Cadastrar Cliente",
             "customerDetails": "Detalhes"
         },
         "conceptsProducts": {
@@ -127,7 +127,7 @@
         },
         "pagination": {
             "itemsPerPage": "Itens por página",
-            "noData": "Nenhum dado encontrado"
+            "noData": "Beeb Boop, parece que nada foi encontrado."
         },
         "uiComponentsGraph": {
             "graph": "Gráficos",

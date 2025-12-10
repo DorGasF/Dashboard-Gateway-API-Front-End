@@ -58,6 +58,8 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
     return (
         <Card>
             <h4 className="mb-6">Address Information</h4>
+
+            {/* Country */}
             <FormItem
                 label="Country"
                 invalid={Boolean(errors.country)}
@@ -83,25 +85,89 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     )}
                 />
             </FormItem>
+
             <FormItem
-                label="Address"
-                invalid={Boolean(errors.address)}
-                errorMessage={errors.address?.message}
+                label="Complement"
+                invalid={Boolean(errors.complement)}
+                errorMessage={errors.complement?.message}
             >
                 <Controller
-                    name="address"
+                    name="complement"
                     control={control}
                     render={({ field }) => (
                         <Input
                             type="text"
                             autoComplete="off"
-                            placeholder="Address"
+                            placeholder="Apartment / Complement"
+                            maxLength={40}
                             {...field}
                         />
                     )}
                 />
             </FormItem>
+
+            {/* City + Postal Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Street */}
+                <FormItem
+                    label="Street"
+                    invalid={Boolean(errors.address)}
+                    errorMessage={errors.address?.message}
+                >
+                    <Controller
+                        name="address"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                autoComplete="off"
+                                placeholder="Street"
+                                maxLength={120}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
+                <FormItem
+                    label="Street Number"
+                    invalid={Boolean(errors.street_number)}
+                    errorMessage={errors.street_number?.message}
+                >
+                    <Controller
+                        name="street_number"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                autoComplete="off"
+                                placeholder="Número"
+                                maxLength={10}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
+                <FormItem
+                    label="Bairro"
+                    invalid={Boolean(errors.neigh)}
+                    errorMessage={errors.neigh?.message}
+                >
+                    <Controller
+                        name="neigh"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                placeholder="Bairro"
+                                maxLength={80}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
                 <FormItem
                     label="City"
                     invalid={Boolean(errors.city)}
@@ -115,11 +181,13 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                 type="text"
                                 autoComplete="off"
                                 placeholder="City"
+                                maxLength={80}
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
+
                 <FormItem
                     label="Postal Code"
                     invalid={Boolean(errors.postcode)}
@@ -133,6 +201,48 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                 type="text"
                                 autoComplete="off"
                                 placeholder="Postal Code"
+                                maxLength={15}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
+                {/* State */}
+                <FormItem
+                    label="State"
+                    invalid={Boolean(errors.state)}
+                    errorMessage={errors.state?.message}
+                >
+                    <Controller
+                        name="state"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                autoComplete="off"
+                                placeholder="State / Province / Region (SP, NY)"
+                                maxLength={5}
+                                {...field}
+                            />
+                        )}
+                    />
+                </FormItem>
+
+                <FormItem
+                    label="Tax ID"
+                    invalid={Boolean(errors.tax_id)}
+                    errorMessage={errors.tax_id?.message}
+                >
+                    <Controller
+                        name="tax_id"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                type="text"
+                                autoComplete="off"
+                                placeholder="CPF ou CNPJ"
+                                maxLength={20}
                                 {...field}
                             />
                         )}

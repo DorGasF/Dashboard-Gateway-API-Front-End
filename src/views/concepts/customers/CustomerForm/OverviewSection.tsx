@@ -85,13 +85,15 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 type="text"
                                 autoComplete="off"
                                 placeholder="First Name"
+                                minLength={2}
+                                maxLength={120}
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
                 <FormItem
-                    label="User Name"
+                    label="Last Name"
                     invalid={Boolean(errors.lastName)}
                     errorMessage={errors.lastName?.message}
                 >
@@ -103,6 +105,8 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 type="text"
                                 autoComplete="off"
                                 placeholder="Last Name"
+                                minLength={2}
+                                maxLength={120}
                                 {...field}
                             />
                         )}
@@ -122,6 +126,8 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                             type="email"
                             autoComplete="off"
                             placeholder="Email"
+                            minLength={1}
+                            maxLength={254}
                             {...field}
                         />
                     )}
@@ -170,7 +176,9 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                         render={({ field }) => (
                             <NumericInput
                                 autoComplete="off"
-                                placeholder="Phone Number"
+                                placeholder="(DDD) 9XXXX-XXXX"
+                                minLength={5}
+                                maxLength={20}
                                 value={field.value}
                                 onChange={field.onChange}
                                 onBlur={field.onBlur}

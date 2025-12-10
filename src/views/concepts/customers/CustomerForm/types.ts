@@ -1,23 +1,23 @@
 import type { Control, FieldErrors } from 'react-hook-form'
 
 export type OverviewFields = {
-    firstName: string
-    lastName: string
-    email: string
-    dialCode: string
-    phoneNumber: string
-    img: string
+    firstName?: string
+    lastName?: string
+    email?: string
+    dialCode?: string
+    phoneLocal?: string
 }
 
 export type AddressFields = {
-    country: string
-    address: string
-    postcode: string
-    city: string
-}
-
-export type ProfileImageFields = {
-    img: string
+    country?: string
+    complement?: string
+    address?: string
+    street_number?: string
+    neigh?: string
+    city?: string
+    postcode?: string
+    state?: string
+    tax_id?: string
 }
 
 export type TagsFields = {
@@ -31,7 +31,6 @@ export type AccountField = {
 
 export type CustomerFormSchema = OverviewFields &
     AddressFields &
-    ProfileImageFields &
     TagsFields &
     AccountField
 

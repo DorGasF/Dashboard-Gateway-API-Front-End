@@ -1,52 +1,104 @@
 import { useEffect } from 'react'
 import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
-import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
 import AddressSection from './AddressSection'
-import TagsSection from './TagsSection'
-import ProfileImageSection from './ProfileImageSection'
-import AccountSection from './AccountSection'
 import isEmpty from 'lodash/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import type { CommonProps } from '@/@types/common'
 import type { CustomerFormSchema } from './types'
+import type { CommonProps } from '@/@types/common'
+import { isValidCPF, isValidCNPJ } from '@/utils/cpfCnpjValidator'
 
 type CustomerFormProps = {
     onFormSubmit: (values: CustomerFormSchema) => void
-    defaultValues?: CustomerFormSchema
+    defaultValues?: Partial<CustomerFormSchema>
     newCustomer?: boolean
 } & CommonProps
 
 const validationSchema = z.object({
-    firstName: z.string().min(1, { message: 'First name required' }),
-    lastName: z.string().min(1, { message: 'Last name required' }),
+    firstName: z.string().max(120, 'Máximo 120 caracteres').optional(),
+
+    lastName: z.string().max(120, 'Máximo 120 caracteres').optional(),
+
     email: z
         .string()
-        .min(1, { message: 'Email required' })
-        .email({ message: 'Invalid email' }),
-    dialCode: z.string().min(1, { message: 'Please select your country code' }),
-    phoneNumber: z
+        .email({ message: 'Invalid email' })
+        .max(254, { message: 'Email must be at most 254 characters' })
+        .optional()
+        .or(z.literal('')),
+
+    dialCode: z.string().optional(),
+
+    phoneLocal: z.string().max(20, 'Muito longo').optional(),
+
+    country: z.string().optional(),
+
+    address: z.string().max(120, 'Máximo 120 caracteres').optional(),
+
+    street_number: z.string().max(10, 'Máximo 10 caracteres').optional(),
+
+    complement: z.string().max(40, 'Máximo 40 caracteres').optional(),
+
+    neigh: z.string().max(80, 'Máximo 80 caracteres').optional(),
+
+    city: z.string().max(80, 'Máximo 80 caracteres').optional(),
+
+    postcode: z.string().max(15, 'Máximo 15 caracteres').optional(),
+
+    state: z.string().max(5, 'Máximo 5 caracteres').optional(),
+
+    tax_id: z
         .string()
-        .min(1, { message: 'Please input your mobile number' }),
-    country: z.string().min(1, { message: 'Please select a country' }),
-    address: z.string().min(1, { message: 'Addrress required' }),
-    postcode: z.string().min(1, { message: 'Postcode required' }),
-    city: z.string().min(1, { message: 'City required' }),
-    img: z.string(),
-    tags: z.array(z.object({ value: z.string(), label: z.string() })),
+        .max(20, 'Máximo 20 caracteres')
+        .default('')
+        .superRefine((value, ctx) => {
+            const clean = value.replace(/\D/g, '')
+
+            if (clean.length === 0) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: 'Documento obrigatório',
+                })
+                return
+            }
+
+            if (clean.length <= 11) {
+                if (!isValidCPF(clean)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'CPF inválido',
+                    })
+                }
+            } else {
+                if (!isValidCNPJ(clean)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'CNPJ inválido',
+                    })
+                }
+            }
+        }),
+
+    img: z.string().optional(),
+
+    tags: z.array(
+        z.object({
+            value: z.string(),
+            label: z.string(),
+        }),
+    ),
+
+    banAccount: z.boolean().optional(),
+    accountVerified: z.boolean().optional(),
 })
 
-const CustomerForm = (props: CustomerFormProps) => {
-    const {
-        onFormSubmit,
-        defaultValues = {},
-        newCustomer = false,
-        children,
-    } = props
-
+const CustomerForm = ({
+    onFormSubmit,
+    defaultValues,
+    newCustomer = false,
+}: CustomerFormProps) => {
     const {
         handleSubmit,
         reset,
@@ -54,51 +106,45 @@ const CustomerForm = (props: CustomerFormProps) => {
         control,
     } = useForm<CustomerFormSchema>({
         defaultValues: {
-            ...{
-                banAccount: false,
-                accountVerified: true,
-            },
+            firstName: '',
+            lastName: '',
+            email: '',
+            dialCode: '',
+            phoneLocal: '',
+            country: '',
+            address: '',
+            street_number: '',
+            neigh: '',
+            city: '',
+            postcode: '',
+            state: '',
+            tax_id: '',
+            complement: '',
+            tags: [],
+            banAccount: false,
+            accountVerified: true,
             ...defaultValues,
         },
         resolver: zodResolver(validationSchema),
     })
 
     useEffect(() => {
-        if (!isEmpty(defaultValues)) {
-            reset(defaultValues)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (!isEmpty(defaultValues)) reset(defaultValues)
     }, [JSON.stringify(defaultValues)])
-
-    const onSubmit = (values: CustomerFormSchema) => {
-        onFormSubmit?.(values)
-    }
 
     return (
         <Form
-            className="flex w-full h-full"
-            containerClassName="flex flex-col w-full justify-between"
-            onSubmit={handleSubmit(onSubmit)}
+            id="customer-form"
+            className="w-full"
+            containerClassName="w-full"
+            onSubmit={handleSubmit(onFormSubmit)}
         >
-            <Container>
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="gap-4 flex flex-col flex-auto">
-                        <OverviewSection control={control} errors={errors} />
-                        <AddressSection control={control} errors={errors} />
-                    </div>
-                    <div className="md:w-[370px] gap-4 flex flex-col">
-                        <ProfileImageSection
-                            control={control}
-                            errors={errors}
-                        />
-                        <TagsSection control={control} errors={errors} />
-                        {!newCustomer && (
-                            <AccountSection control={control} errors={errors} />
-                        )}
-                    </div>
+            <Container className="px-4 md:px-6">
+                <div className="flex flex-col gap-6">
+                    <OverviewSection control={control} errors={errors} />
+                    <AddressSection control={control} errors={errors} />
                 </div>
             </Container>
-            <BottomStickyBar>{children}</BottomStickyBar>
         </Form>
     )
 }

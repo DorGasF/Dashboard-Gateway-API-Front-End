@@ -26,7 +26,6 @@ import {
     CellContext,
 } from '@tanstack/react-table'
 import type { TableProps } from '@/components/ui/Table'
-import type { SkeletonProps } from '@/components/ui/Skeleton'
 import type { Ref, ChangeEvent, ReactNode } from 'react'
 import type { CheckboxProps } from '@/components/ui/Checkbox'
 import { useTranslation } from 'react-i18next'
@@ -47,8 +46,6 @@ type DataTableProps<T> = {
     onSort?: (sort: OnSortParam) => void
     pageSizes?: number[]
     selectable?: boolean
-    skeletonAvatarColumns?: number[]
-    skeletonAvatarProps?: SkeletonProps
     pagingData?: {
         total: number
         pageIndex: number
@@ -85,8 +82,7 @@ const IndeterminateCheckbox = (props: IndeterminateCheckboxProps) => {
         if (typeof indeterminate === 'boolean' && ref.current) {
             ref.current.indeterminate = !rest.checked && indeterminate
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ref, indeterminate])
+    }, [ref, indeterminate, rest.checked])
 
     const handleChange = (e: CheckBoxChangeEvent) => {
         onChange(e)
@@ -111,7 +107,6 @@ export type DataTableResetHandle = {
 
 function DataTable<T>(props: DataTableProps<T>) {
     const {
-        skeletonAvatarColumns,
         columns: columnsProp = [],
         data = [],
         customNoDataIcon,
@@ -124,7 +119,6 @@ function DataTable<T>(props: DataTableProps<T>) {
         onSort,
         pageSizes = [10, 25, 50, 100],
         selectable = false,
-        skeletonAvatarProps,
         pagingData = {
             total: 0,
             pageIndex: 1,
@@ -138,9 +132,7 @@ function DataTable<T>(props: DataTableProps<T>) {
     } = props
 
     const { pageSize, pageIndex, total } = pagingData
-
     const [sorting, setSorting] = useState<ColumnSort[] | null>(null)
-
     const { t } = useTranslation()
 
     const pageSizeOption = useMemo(
@@ -159,8 +151,7 @@ function DataTable<T>(props: DataTableProps<T>) {
             const id = sorting.length > 0 ? sorting[0].id : ''
             onSort?.({ order: sortOrder, key: id })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sorting])
+    }, [sorting, onSort])
 
     const handleIndeterminateCheckBoxChange = (
         checked: boolean,
@@ -227,13 +218,17 @@ function DataTable<T>(props: DataTableProps<T>) {
             ]
         }
         return columns
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [columnsProp, selectable, loading, checkboxChecked])
+    }, [
+        columnsProp,
+        selectable,
+        loading,
+        checkboxChecked,
+        indeterminateCheckboxChecked,
+    ])
 
     const table = useReactTable({
         data,
-        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        columns: finalColumns as ColumnDef<unknown | object | any[], any>[],
+        columns: finalColumns as ColumnDef<any, any>[],
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -314,12 +309,11 @@ function DataTable<T>(props: DataTableProps<T>) {
                         </Tr>
                     ))}
                 </THead>
+
                 {loading && data.length === 0 ? (
                     <TableRowSkeleton
-                        columns={(finalColumns as Array<T>).length}
+                        columns={(finalColumns as T[]).length}
                         rows={pagingData.pageSize}
-                        avatarInColumns={skeletonAvatarColumns}
-                        avatarProps={skeletonAvatarProps}
                     />
                 ) : (
                     <TBody>
@@ -336,7 +330,7 @@ function DataTable<T>(props: DataTableProps<T>) {
                                             <>
                                                 <FileNotFound />
                                                 <span className="font-semibold">
-                                                    No data found!
+                                                    {t('nav.pagination.noData')}
                                                 </span>
                                             </>
                                         )}
@@ -376,6 +370,7 @@ function DataTable<T>(props: DataTableProps<T>) {
                     </TBody>
                 )}
             </Table>
+
             <div className="flex items-center justify-between mt-4">
                 <Pagination
                     pageSize={pageSize}

@@ -85,8 +85,16 @@ const FormItem = (props: FormItemProps) => {
         return { ...style }
     }
 
-    const enterStyle = { opacity: 1, marginTop: 3, bottom: -21 }
-    const exitStyle = { opacity: 0, marginTop: -10 }
+    const enterStyle = {
+        opacity: 1,
+        marginTop: 6, // pequeno respiro entre input e erro
+    }
+
+    const exitStyle = {
+        opacity: 0,
+        marginTop: -6,
+    }
+
     const initialStyle = exitStyle
 
     return (
