@@ -59,11 +59,24 @@
 }
 
 @layer base {
-	*,
-	::after,
-	::before,
-	::backdrop,
-	::file-selector-button {
+
+        /*
+         * Prevent the text caret from appearing on non-editable elements.
+         * Re-enable it for actual form controls and editable regions only.
+         */
+        :where(*) {
+                caret-color: transparent;
+        }
+
+        :where(input, textarea, select, button, [contenteditable]) {
+                caret-color: auto;
+        }
+
+        *,
+        ::after,
+        ::before,
+        ::backdrop,
+        ::file-selector-button {
 		border-color: var(--color-gray-200, currentColor);
 	}
 
