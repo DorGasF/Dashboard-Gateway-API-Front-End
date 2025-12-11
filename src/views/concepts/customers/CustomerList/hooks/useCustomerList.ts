@@ -4,7 +4,7 @@ import { useCustomerListStore } from '../store/customerListStore'
 import type { GetCustomersListResponse } from '../types'
 import type { TableQueries } from '@/@types/common'
 
-function buildQueryParams(tableData: TableQueries) {
+export function buildQueryParams(tableData: TableQueries) {
     const params: any = {
         pageIndex: tableData.pageIndex,
         pageSize: tableData.pageSize,

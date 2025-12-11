@@ -22,7 +22,30 @@
             "customerList": "Clientes",
             "customerEdit": "Editar",
             "customerCreate": "Cadastrar Cliente",
-            "customerDetails": "Detalhes"
+            "customerDetails": "Detalhes",
+            "create": "Cadastrar Cliente",
+            "error": "Erro",
+            "createdTitle": "Cliente criado",
+            "updatedTitle": "Cliente atualizado",
+            "createdMessage": "O cliente {{name}} foi cadastrado com sucesso.",
+            "updatedMessage": "As informações do cliente {{name}} foram atualizadas.",
+            "genericClient": "o cliente",
+            "unexpectedError": "Erro inesperado",
+            "errors": {
+                "unexpected": "Erro inesperado ao criar cliente."
+            },
+            "backend": {
+                "INVALID_JSON": "O formato enviado não é válido.",
+                "EMPTY_BODY": "O corpo da requisição está vazio.",
+                "MISSING_FIELDS": "Existem campos obrigatórios faltando.",
+                "INVALID_EMAIL": "O e-mail informado é inválido.",
+                "INVALID_TAX_ID": "O CPF/CNPJ informado é inválido.",
+                "INVALID_SQL_FIELD": "Um ou mais campos possuem caracteres inválidos.",
+                "INSERT_ERROR": "Não foi possível criar ou atualizar o cliente.",
+                "UNAUTHORIZED": "Sessão expirada ou acesso não autorizado.",
+                "CLIENT_CREATED": "Cliente criado com sucesso.",
+                "CLIENT_UPDATED": "Cliente atualizado com sucesso."
+            }
         },
         "conceptsProducts": {
             "scrumBoard": "Quadro Scrum",
@@ -30,6 +53,14 @@
             "productList": "Lista",
             "productEdit": "Editar",
             "productCreate": "Criar"
+        },
+        "customerForm": {
+            "overviewTitle": "Visão Geral",
+            "firstName": "Nome",
+            "lastName": "Sobrenome",
+            "email": "E-mail",
+            "phoneNumber": "Telefone",
+            "phonePlaceholder": "(DDD) 9XXXX-XXXX"
         },
         "conceptsProjects": {
             "projects": "Projetos",

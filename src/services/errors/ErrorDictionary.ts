@@ -9,7 +9,7 @@ export type ErrorCode =
     | 'UNKNOWN_ERROR'
 
 export const ErrorDictionary: Record<ErrorCode, string> = {
-    NETWORK_ERROR: 'Não foi possível conectar ao servidor.',
+    NETWORK_ERROR: 'Verifique sua conexão com a internet.',
     TIMEOUT: 'O servidor demorou para responder.',
     UNAUTHORIZED: 'Credenciais inválidas.',
     FORBIDDEN: 'Você não tem permissão para acessar este recurso.',

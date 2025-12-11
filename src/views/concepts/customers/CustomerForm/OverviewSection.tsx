@@ -8,6 +8,7 @@ import NumericInput from '@/components/shared/NumericInput'
 import { countryList } from '@/constants/countries.constant'
 import { Controller } from 'react-hook-form'
 import { components } from 'react-select'
+import { useTranslation } from 'react-i18next'
 import type { FormSectionBaseProps } from './types'
 import type { ControlProps, OptionProps } from 'react-select'
 
@@ -57,6 +58,8 @@ const CustomControl = ({ children, ...props }: ControlProps<CountryOption>) => {
 }
 
 const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
+    const { t } = useTranslation()
+
     const dialCodeList = useMemo(() => {
         const newCountryList: Array<CountryOption> = JSON.parse(
             JSON.stringify(countryList),
@@ -70,10 +73,11 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
 
     return (
         <Card>
-            <h4 className="mb-6">Overview</h4>
+            <h4 className="mb-6">{t('nav.customerForm.overviewTitle')}</h4>
+
             <div className="grid md:grid-cols-2 gap-4">
                 <FormItem
-                    label="First Name"
+                    label={t('nav.customerForm.firstName')}
                     invalid={Boolean(errors.firstName)}
                     errorMessage={errors.firstName?.message}
                 >
@@ -84,16 +88,17 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="First Name"
+                                placeholder={t('nav.customerForm.firstName')}
                                 minLength={2}
-                                maxLength={120}
+                                maxLength={59}
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
+
                 <FormItem
-                    label="Last Name"
+                    label={t('nav.customerForm.lastName')}
                     invalid={Boolean(errors.lastName)}
                     errorMessage={errors.lastName?.message}
                 >
@@ -104,17 +109,18 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="Last Name"
+                                placeholder={t('nav.customerForm.lastName')}
                                 minLength={2}
-                                maxLength={120}
+                                maxLength={59}
                                 {...field}
                             />
                         )}
                     />
                 </FormItem>
             </div>
+
             <FormItem
-                label="Email"
+                label={t('nav.customerForm.email')}
                 invalid={Boolean(errors.email)}
                 errorMessage={errors.email?.message}
             >
@@ -125,7 +131,7 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                         <Input
                             type="email"
                             autoComplete="off"
-                            placeholder="Email"
+                            placeholder={t('nav.customerForm.email')}
                             minLength={1}
                             maxLength={254}
                             {...field}
@@ -133,13 +139,17 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                     )}
                 />
             </FormItem>
+
             <div className="flex items-end gap-4 w-full">
                 <FormItem
                     invalid={
-                        Boolean(errors.phoneNumber) || Boolean(errors.dialCode)
+                        Boolean(errors.phoneLocal) || Boolean(errors.dialCode)
                     }
                 >
-                    <label className="form-label mb-2">Phone number</label>
+                    <label className="form-label mb-2">
+                        {t('nav.customerForm.phoneNumber')}
+                    </label>
+
                     <Controller
                         name="dialCode"
                         control={control}
@@ -163,20 +173,23 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                         )}
                     />
                 </FormItem>
+
                 <FormItem
                     className="w-full"
                     invalid={
-                        Boolean(errors.phoneNumber) || Boolean(errors.dialCode)
+                        Boolean(errors.phoneLocal) || Boolean(errors.dialCode)
                     }
-                    errorMessage={errors.phoneNumber?.message}
+                    errorMessage={errors.phoneLocal?.message}
                 >
                     <Controller
-                        name="phoneNumber"
+                        name="phoneLocal"
                         control={control}
                         render={({ field }) => (
                             <NumericInput
                                 autoComplete="off"
-                                placeholder="(DDD) 9XXXX-XXXX"
+                                placeholder={t(
+                                    'nav.customerForm.phonePlaceholder',
+                                )}
                                 minLength={5}
                                 maxLength={20}
                                 value={field.value}
