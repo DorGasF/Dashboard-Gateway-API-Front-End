@@ -9,7 +9,6 @@ export type OverviewFields = {
 }
 
 export type AddressFields = {
-    country?: string
     complement?: string
     address?: string
     street_number?: string
@@ -20,19 +19,7 @@ export type AddressFields = {
     tax_id?: string
 }
 
-export type TagsFields = {
-    tags: Array<{ value: string; label: string }>
-}
-
-export type AccountField = {
-    banAccount?: boolean
-    accountVerified?: boolean
-}
-
-export type CustomerFormSchema = OverviewFields &
-    AddressFields &
-    TagsFields &
-    AccountField
+export type CustomerFormSchema = OverviewFields & AddressFields
 
 export type FormSectionBaseProps = {
     control: Control<CustomerFormSchema>

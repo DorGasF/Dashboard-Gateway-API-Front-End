@@ -33,8 +33,6 @@ const validationSchema = z.object({
 
     phoneLocal: z.string().max(20, 'Muito longo').optional(),
 
-    country: z.string().optional(),
-
     address: z.string().max(120, 'Máximo 120 caracteres').optional(),
 
     street_number: z.string().max(10, 'Máximo 10 caracteres').optional(),
@@ -82,16 +80,6 @@ const validationSchema = z.object({
         }),
 
     img: z.string().optional(),
-
-    tags: z.array(
-        z.object({
-            value: z.string(),
-            label: z.string(),
-        }),
-    ),
-
-    banAccount: z.boolean().optional(),
-    accountVerified: z.boolean().optional(),
 })
 
 const CustomerForm = ({
@@ -111,7 +99,6 @@ const CustomerForm = ({
             email: '',
             dialCode: '',
             phoneLocal: '',
-            country: '',
             address: '',
             street_number: '',
             neigh: '',
@@ -120,9 +107,6 @@ const CustomerForm = ({
             state: '',
             tax_id: '',
             complement: '',
-            tags: [],
-            banAccount: false,
-            accountVerified: true,
             ...defaultValues,
         },
         resolver: zodResolver(validationSchema),

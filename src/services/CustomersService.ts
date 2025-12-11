@@ -30,3 +30,14 @@ export async function apiGetCustomerLog<T, U extends Record<string, unknown>>({
         params,
     })
 }
+
+export async function apiCreateCustomer<
+    T,
+    U extends Record<string, unknown> = Record<string, unknown>,
+>(payload: U) {
+    return ApiService.fetchDataWithAxios<T>({
+        url: '/v1/client/create',
+        method: 'post',
+        data: payload,
+    })
+}
