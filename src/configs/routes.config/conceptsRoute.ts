@@ -47,17 +47,6 @@ const conceptsRoute: Routes = [
         },
     },
     {
-        key: 'concepts.customers.customerDetails',
-        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/:id`,
-        component: lazy(
-            () => import('@/views/concepts/customers/CustomerDetails'),
-        ),
-        authority: [ADMIN, USER],
-        meta: {
-            pageContainerType: 'contained',
-        },
-    },
-    {
         key: 'concepts.projects.scrumBoard',
         path: `${CONCEPTS_PREFIX_PATH}/projects/scrum-board`,
         component: lazy(() => import('@/views/concepts/projects/ScrumBoard')),
@@ -154,15 +143,11 @@ const conceptsRoute: Routes = [
                 contained: true,
                 title: lazy(
                     () =>
-                        import(
-                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeader'
-                        ),
+                        import('@/views/concepts/orders/OrderDetails/components/OrderDetailHeader'),
                 ),
                 extraHeader: lazy(
                     () =>
-                        import(
-                            '@/views/concepts/orders/OrderDetails/components/OrderDetailHeaderExtra'
-                        ),
+                        import('@/views/concepts/orders/OrderDetails/components/OrderDetailHeaderExtra'),
                 ),
             },
             pageContainerType: 'contained',

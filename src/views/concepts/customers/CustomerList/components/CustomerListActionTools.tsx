@@ -64,9 +64,7 @@ const CustomerListActionTools = () => {
 
             const code = resp?.message?.code
             const isError = resp?.message?.type === 'error'
-            const nome =
-                resp?.data?.full_name ||
-                t('nav.conceptsCustomers.genericClient')
+            const nome = resp?.data?.full_name
 
             if (isError) {
                 const text = translateBackendError(code, t)

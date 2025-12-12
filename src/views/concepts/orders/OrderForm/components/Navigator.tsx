@@ -11,13 +11,6 @@ const navigationList = [
         icon: <TbPackage />,
     },
     {
-        label: 'Customer details',
-        description:
-            'Enter customer information like name, email & phone number.',
-        link: 'customerDetails',
-        icon: <TbUserSquare />,
-    },
-    {
         label: 'Address Information',
         description: 'Provide shipping address details.',
         link: 'addressInformation',

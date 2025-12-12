@@ -16,12 +16,10 @@ import type { Customer } from '../CustomerList/types'
 
 const CustomerEdit = () => {
     const { id } = useParams()
-
     const navigate = useNavigate()
 
     const { data, isLoading } = useSWR(
         [`/api/customers${id}`, { id: id as string }],
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, params]) => apiGetCustomer<Customer, { id: string }>(params),
         {
             revalidateOnFocus: false,
@@ -30,13 +28,13 @@ const CustomerEdit = () => {
     )
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
-    const [isSubmiting, setIsSubmiting] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handleFormSubmit = async (values: CustomerFormSchema) => {
-        console.log('Submitted values', values)
-        setIsSubmiting(true)
+        setIsSubmitting(true)
         await sleep(800)
-        setIsSubmiting(false)
+        setIsSubmitting(false)
+
         toast.push(<Notification type="success">Changes Saved!</Notification>, {
             placement: 'top-center',
         })
@@ -44,113 +42,114 @@ const CustomerEdit = () => {
     }
 
     const getDefaultValues = () => {
-        if (data) {
-            const { firstName, lastName, email, personalInfo, img } = data
+        if (!data) return {}
 
-            return {
-                firstName,
-                lastName,
-                email,
-                img,
-                phoneNumber: personalInfo.phoneNumber,
-                dialCode: personalInfo.dialCode,
-                country: personalInfo.country,
-                address: personalInfo.address,
-                city: personalInfo.city,
-                postcode: personalInfo.postcode,
-                tags: [],
-            }
+        const { firstName, lastName, email, personalInfo, img } = data
+
+        return {
+            firstName,
+            lastName,
+            email,
+            img,
+            phoneLocal: personalInfo.phoneNumber,
+            dialCode: personalInfo.dialCode,
+            address: personalInfo.address,
+            city: personalInfo.city,
+            postcode: personalInfo.postcode,
+            neigh: personalInfo.neigh,
+            state: personalInfo.state,
+            complement: personalInfo.complement,
+            tax_id: personalInfo.tax_id,
         }
-
-        return {}
     }
+
+    const handleBack = () => history.back()
+    const handleDelete = () => setDeleteConfirmationOpen(true)
+    const handleCancel = () => setDeleteConfirmationOpen(false)
 
     const handleConfirmDelete = () => {
         setDeleteConfirmationOpen(true)
+
         toast.push(
             <Notification type="success">Customer deleted!</Notification>,
             { placement: 'top-center' },
         )
+
         navigate('/concepts/customers/customer-list')
     }
 
-    const handleDelete = () => {
-        setDeleteConfirmationOpen(true)
-    }
-
-    const handleCancel = () => {
-        setDeleteConfirmationOpen(false)
-    }
-
-    const handleBack = () => {
-        history.back()
-    }
+    const buttonsDisabled = isLoading || !data || isSubmitting
 
     return (
         <>
+            {/* Se não encontrou o usuário */}
             {!isLoading && !data && (
                 <div className="h-full flex flex-col items-center justify-center">
                     <NoUserFound height={280} width={280} />
                     <h3 className="mt-8">No user found!</h3>
                 </div>
             )}
-            {!isLoading && data && (
-                <>
-                    <CustomerForm
-                        defaultValues={getDefaultValues() as CustomerFormSchema}
-                        newCustomer={false}
-                        onFormSubmit={handleFormSubmit}
-                    >
-                        <Container>
-                            <div className="flex items-center justify-between px-8">
-                                <Button
-                                    className="ltr:mr-3 rtl:ml-3"
-                                    type="button"
-                                    variant="plain"
-                                    icon={<TbArrowNarrowLeft />}
-                                    onClick={handleBack}
-                                >
-                                    Back
-                                </Button>
-                                <div className="flex items-center">
-                                    <Button
-                                        className="ltr:mr-3 rtl:ml-3"
-                                        type="button"
-                                        customColorClass={() =>
-                                            'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
-                                        }
-                                        icon={<TbTrash />}
-                                        onClick={handleDelete}
-                                    >
-                                        Delete
-                                    </Button>
-                                    <Button
-                                        variant="solid"
-                                        type="submit"
-                                        loading={isSubmiting}
-                                    >
-                                        Save
-                                    </Button>
-                                </div>
-                            </div>
-                        </Container>
-                    </CustomerForm>
-                    <ConfirmDialog
-                        isOpen={deleteConfirmationOpen}
-                        type="danger"
-                        title="Remove customers"
-                        onClose={handleCancel}
-                        onRequestClose={handleCancel}
-                        onCancel={handleCancel}
-                        onConfirm={handleConfirmDelete}
-                    >
-                        <p>
-                            Are you sure you want to remove this customer? This
-                            action can&apos;t be undo.{' '}
-                        </p>
-                    </ConfirmDialog>
-                </>
-            )}
+
+            {/* Renderiza SEMPRE, mesmo enquanto carrega */}
+            <CustomerForm
+                defaultValues={getDefaultValues() as CustomerFormSchema}
+                newCustomer={false}
+                onFormSubmit={handleFormSubmit}
+            >
+                <Container>
+                    <div className="flex items-center justify-between px-8">
+                        <Button
+                            className="ltr:mr-3 rtl:ml-3"
+                            type="button"
+                            variant="plain"
+                            icon={<TbArrowNarrowLeft />}
+                            onClick={handleBack}
+                            disabled={isLoading || !data}
+                        >
+                            Back
+                        </Button>
+
+                        <div className="flex items-center">
+                            <Button
+                                className="ltr:mr-3 rtl:ml-3"
+                                type="button"
+                                customColorClass={() =>
+                                    'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
+                                }
+                                icon={<TbTrash />}
+                                onClick={handleDelete}
+                                disabled={isLoading || !data}
+                            >
+                                Delete
+                            </Button>
+
+                            <Button
+                                variant="solid"
+                                type="submit"
+                                loading={isSubmitting}
+                                disabled={isLoading || !data}
+                            >
+                                Save
+                            </Button>
+                        </div>
+                    </div>
+                </Container>
+            </CustomerForm>
+
+            <ConfirmDialog
+                isOpen={deleteConfirmationOpen}
+                type="danger"
+                title="Remove customers"
+                onClose={handleCancel}
+                onRequestClose={handleCancel}
+                onCancel={handleCancel}
+                onConfirm={handleConfirmDelete}
+            >
+                <p>
+                    Are you sure you want to remove this customer? This action
+                    can't be undone.
+                </p>
+            </ConfirmDialog>
         </>
     )
 }

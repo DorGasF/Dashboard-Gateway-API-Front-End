@@ -2,20 +2,21 @@ import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
 import { FormItem } from '@/components/ui/Form'
 import { Controller } from 'react-hook-form'
-import { components } from 'react-select'
+import { useTranslation } from 'react-i18next'
 import type { FormSectionBaseProps } from './types'
 
 type AddressSectionProps = FormSectionBaseProps
 
-const { Control } = components
-
 const AddressSection = ({ control, errors }: AddressSectionProps) => {
+    const { t } = useTranslation()
+
     return (
         <Card>
-            <h4 className="mb-6">Address Information</h4>
+            <h4 className="mb-6">{t('nav.addressSection.title')}</h4>
 
+            {/* Complement */}
             <FormItem
-                label="Complement"
+                label={t('nav.addressSection.complement')}
                 invalid={Boolean(errors.complement)}
                 errorMessage={errors.complement?.message}
             >
@@ -26,7 +27,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                         <Input
                             type="text"
                             autoComplete="off"
-                            placeholder="Apartment / Complement"
+                            placeholder={t(
+                                'nav.addressSection.complementPlaceholder',
+                            )}
                             maxLength={40}
                             {...field}
                         />
@@ -34,11 +37,10 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                 />
             </FormItem>
 
-            {/* City + Postal Code */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Street */}
                 <FormItem
-                    label="Street"
+                    label={t('nav.addressSection.street')}
                     invalid={Boolean(errors.address)}
                     errorMessage={errors.address?.message}
                 >
@@ -49,7 +51,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="Street"
+                                placeholder={t(
+                                    'nav.addressSection.streetPlaceholder',
+                                )}
                                 maxLength={120}
                                 {...field}
                             />
@@ -57,8 +61,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     />
                 </FormItem>
 
+                {/* Street Number */}
                 <FormItem
-                    label="Street Number"
+                    label={t('nav.addressSection.streetNumber')}
                     invalid={Boolean(errors.street_number)}
                     errorMessage={errors.street_number?.message}
                 >
@@ -69,7 +74,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="Número"
+                                placeholder={t(
+                                    'nav.addressSection.streetNumberPlaceholder',
+                                )}
                                 maxLength={10}
                                 {...field}
                             />
@@ -77,8 +84,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     />
                 </FormItem>
 
+                {/* Neigh */}
                 <FormItem
-                    label="Bairro"
+                    label={t('nav.addressSection.neigh')}
                     invalid={Boolean(errors.neigh)}
                     errorMessage={errors.neigh?.message}
                 >
@@ -88,7 +96,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                         render={({ field }) => (
                             <Input
                                 type="text"
-                                placeholder="Bairro"
+                                placeholder={t(
+                                    'nav.addressSection.neighPlaceholder',
+                                )}
                                 maxLength={80}
                                 {...field}
                             />
@@ -96,8 +106,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     />
                 </FormItem>
 
+                {/* City */}
                 <FormItem
-                    label="City"
+                    label={t('nav.addressSection.city')}
                     invalid={Boolean(errors.city)}
                     errorMessage={errors.city?.message}
                 >
@@ -108,7 +119,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="City"
+                                placeholder={t(
+                                    'nav.addressSection.cityPlaceholder',
+                                )}
                                 maxLength={80}
                                 {...field}
                             />
@@ -116,8 +129,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     />
                 </FormItem>
 
+                {/* Postal Code */}
                 <FormItem
-                    label="Postal Code"
+                    label={t('nav.addressSection.postcode')}
                     invalid={Boolean(errors.postcode)}
                     errorMessage={errors.postcode?.message}
                 >
@@ -128,7 +142,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="Postal Code"
+                                placeholder={t(
+                                    'nav.addressSection.postcodePlaceholder',
+                                )}
                                 maxLength={15}
                                 {...field}
                             />
@@ -138,7 +154,7 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
 
                 {/* State */}
                 <FormItem
-                    label="State"
+                    label={t('nav.addressSection.state')}
                     invalid={Boolean(errors.state)}
                     errorMessage={errors.state?.message}
                 >
@@ -149,7 +165,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="State / Province / Region (SP, NY)"
+                                placeholder={t(
+                                    'nav.addressSection.statePlaceholder',
+                                )}
                                 maxLength={5}
                                 {...field}
                             />
@@ -157,8 +175,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     />
                 </FormItem>
 
+                {/* Tax ID */}
                 <FormItem
-                    label="Tax ID"
+                    label={t('nav.addressSection.taxId')}
                     invalid={Boolean(errors.tax_id)}
                     errorMessage={errors.tax_id?.message}
                 >
@@ -169,9 +188,19 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                             <Input
                                 type="text"
                                 autoComplete="off"
-                                placeholder="CPF ou CNPJ"
+                                placeholder={t(
+                                    'nav.addressSection.taxIdPlaceholder',
+                                )}
                                 maxLength={20}
-                                {...field}
+                                value={field.value}
+                                onChange={(e) => {
+                                    const numbersOnly = e.target.value.replace(
+                                        /[^0-9]/g,
+                                        '',
+                                    )
+                                    field.onChange(numbersOnly)
+                                }}
+                                onBlur={field.onBlur}
                             />
                         )}
                     />

@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import Dialog from '@/components/ui/Dialog'
 import CustomerForm from '@/views/concepts/customers/CustomerForm/CustomerForm'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
     open: boolean
@@ -11,6 +11,8 @@ type Props = {
 }
 
 const CreateCustomerDialog = ({ open, onClose, onCreate, loading }: Props) => {
+    const { t } = useTranslation()
+
     const handleSubmitCreate = async (values: any) => {
         await onCreate(values)
     }
@@ -27,18 +29,21 @@ const CreateCustomerDialog = ({ open, onClose, onCreate, loading }: Props) => {
             <div className="flex flex-col max-h-[80vh]">
                 {/* BODY */}
                 <div className="overflow-y-auto max-h-[70vh] px-6 pb-6">
-                    <h5 className="mb-4">Cadastrar Cliente</h5>
+                    <h5 className="mb-4">
+                        {t('nav.createCustomerDialog.title')}
+                    </h5>
 
                     <CustomerForm
                         onFormSubmit={handleSubmitCreate}
                         newCustomer={true}
+                        isModal={true}
                     />
                 </div>
 
-                {/* FOOTER */}
+                {/* FOOTER FIXO DO MODAL */}
                 <div className="flex justify-end items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-lg rounded-br-lg">
                     <Button onClick={onClose} disabled={loading}>
-                        Cancelar
+                        {t('nav.createCustomerDialog.cancelButton')}
                     </Button>
 
                     <Button
@@ -49,7 +54,7 @@ const CreateCustomerDialog = ({ open, onClose, onCreate, loading }: Props) => {
                         disabled={loading}
                         className="min-w-[130px]"
                     >
-                        Criar Cliente
+                        {t('nav.createCustomerDialog.createButton')}
                     </Button>
                 </div>
             </div>

@@ -6,7 +6,6 @@ import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
 import { apiGetProductList } from '@/services/ProductService'
 import ProductSelectSection from './components/ProductSelectSection'
-import CustomerDetailSection from './components/CustomerDetailSection'
 import BillingAddressSection from './components/BillingAddressSection'
 import PaymentMethodSection from './components/PaymentMethodSection'
 import Navigator from './components/Navigator'
@@ -50,73 +49,68 @@ const baseValidationSchema = z.object({
     city: z.string().min(1, { message: 'City required' }),
 })
 
-const validationSchema = z.discriminatedUnion(
-    'paymentMethod',
-    [
-        z
-            .object({
-                paymentMethod: z.literal('creditOrDebitCard'),
-                cardHolderName: z
-                    .string()
-                    .min(1, { message: 'Card holder name required' }),
-                ccNumber: z
-                    .string()
-                    .min(1, 'Credit card number required')
-                    .refine(
-                        (value) =>
-                            /^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/.test(
-                                value,
-                            ),
-                        'Invalid credit card number',
-                    ),
-                cardExpiry: z
-                    .string()
-                    .min(1, { message: 'Card expiry required' })
-                    .refine(
-                        (value) =>
-                            /^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/.test(
-                                value,
-                            ),
-                        'Invalid Date',
-                    ),
-                code: z
-                    .string()
-                    .min(1, { message: 'Code required' })
-                    .refine((value) => /^[0-9]{3}$/.test(value), 'Invalid CVV'),
-            })
-            .extend(baseValidationSchema.shape),
-        z
-            .object({
-                paymentMethod: z.literal('paypal'),
-                paypalEmail: z
-                    .string()
-                    .min(1, { message: 'Email required' })
-                    .email({ message: 'Invalid email' }),
-            })
-            .extend(baseValidationSchema.shape),
-        z
-            .object({
-                paymentMethod: z.literal('bankTransfer'),
-                bankName: z.string().min(1, { message: 'Bank name required' }),
-                accountNumber: z
-                    .string()
-                    .min(1, { message: 'Account number required' }),
-                accountHolderName: z
-                    .string()
-                    .min(1, { message: 'Account holder name required' }),
-                IBAN: z.string().min(1, { message: 'IBAN required' }),
-                referenceNumber: z
-                    .string()
-                    .min(1, { message: 'Reference number required' }),
-            })
-            .extend(baseValidationSchema.shape),
-        z
-            .object({
-                paymentMethod: z.literal(''),
-            })
-            .extend(baseValidationSchema.shape),
-    ],
-)
+const validationSchema = z.discriminatedUnion('paymentMethod', [
+    z
+        .object({
+            paymentMethod: z.literal('creditOrDebitCard'),
+            cardHolderName: z
+                .string()
+                .min(1, { message: 'Card holder name required' }),
+            ccNumber: z
+                .string()
+                .min(1, 'Credit card number required')
+                .refine(
+                    (value) =>
+                        /^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/.test(
+                            value,
+                        ),
+                    'Invalid credit card number',
+                ),
+            cardExpiry: z
+                .string()
+                .min(1, { message: 'Card expiry required' })
+                .refine(
+                    (value) =>
+                        /^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$/.test(value),
+                    'Invalid Date',
+                ),
+            code: z
+                .string()
+                .min(1, { message: 'Code required' })
+                .refine((value) => /^[0-9]{3}$/.test(value), 'Invalid CVV'),
+        })
+        .extend(baseValidationSchema.shape),
+    z
+        .object({
+            paymentMethod: z.literal('paypal'),
+            paypalEmail: z
+                .string()
+                .min(1, { message: 'Email required' })
+                .email({ message: 'Invalid email' }),
+        })
+        .extend(baseValidationSchema.shape),
+    z
+        .object({
+            paymentMethod: z.literal('bankTransfer'),
+            bankName: z.string().min(1, { message: 'Bank name required' }),
+            accountNumber: z
+                .string()
+                .min(1, { message: 'Account number required' }),
+            accountHolderName: z
+                .string()
+                .min(1, { message: 'Account holder name required' }),
+            IBAN: z.string().min(1, { message: 'IBAN required' }),
+            referenceNumber: z
+                .string()
+                .min(1, { message: 'Reference number required' }),
+        })
+        .extend(baseValidationSchema.shape),
+    z
+        .object({
+            paymentMethod: z.literal(''),
+        })
+        .extend(baseValidationSchema.shape),
+])
 
 const OrderForm = (props: OrderFormProps) => {
     const { onFormSubmit, children, defaultValues, defaultProducts } = props
@@ -186,7 +180,9 @@ const OrderForm = (props: OrderFormProps) => {
         control,
     } = useForm<OrderFormSchema>({
         defaultValues: {
-            ...(defaultValues ? defaultValues : { paymentMethod: 'creditOrDebitCard' }),
+            ...(defaultValues
+                ? defaultValues
+                : { paymentMethod: 'creditOrDebitCard' }),
         },
         resolver: zodResolver(validationSchema),
     })
@@ -214,10 +210,6 @@ const OrderForm = (props: OrderFormProps) => {
                     <div className="flex-1">
                         <div className="flex flex-col gap-4">
                             <ProductSelectSection />
-                            <CustomerDetailSection
-                                control={control}
-                                errors={errors}
-                            />
                             <BillingAddressSection
                                 control={control}
                                 errors={errors}
@@ -225,9 +217,7 @@ const OrderForm = (props: OrderFormProps) => {
                             <PaymentMethodSection
                                 control={control}
                                 errors={errors}
-                                selectedPaymentMethod={
-                                    selectedPaymentMethod
-                                }
+                                selectedPaymentMethod={selectedPaymentMethod}
                             />
                         </div>
                     </div>

@@ -25,14 +25,6 @@ export type ProductOption = {
 
 export type SelectedProduct = Product & { quantity: number }
 
-export type CustomerDetailsFields = {
-    firstName: string
-    lastName: string
-    email: string
-    dialCode: string
-    phoneNumber: string
-}
-
 export type BillingAddressFields = {
     country: string
     address: string
@@ -67,12 +59,18 @@ export interface PaymentMethodFields {
     paymentMethod: PaymentType
 }
 
-type BaseFields = CustomerDetailsFields & BillingAddressFields
+type BaseFields = BillingAddressFields
 
 export type OrderFormSchema =
-    | (BaseFields & { paymentMethod: 'creditOrDebitCard' } & GetPaymentMethodFields<'creditOrDebitCard'>)
-    | (BaseFields & { paymentMethod: 'paypal' } & GetPaymentMethodFields<'paypal'>)
-    | (BaseFields & { paymentMethod: 'bankTransfer' } & GetPaymentMethodFields<'bankTransfer'>)
+    | (BaseFields & {
+          paymentMethod: 'creditOrDebitCard'
+      } & GetPaymentMethodFields<'creditOrDebitCard'>)
+    | (BaseFields & {
+          paymentMethod: 'paypal'
+      } & GetPaymentMethodFields<'paypal'>)
+    | (BaseFields & {
+          paymentMethod: 'bankTransfer'
+      } & GetPaymentMethodFields<'bankTransfer'>)
     | (BaseFields & { paymentMethod: '' } & GetPaymentMethodFields<''>)
 
 export type FormSectionBaseProps = {

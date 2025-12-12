@@ -539,14 +539,6 @@ export const searchQueryPoolData = [
         categoryTitle: 'Concepts',
     },
     {
-        key: 'concepts.customers.customerDetails',
-        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-details/1`,
-        title: 'Customer Details',
-        icon: 'customerDetails',
-        category: 'Customers',
-        categoryTitle: 'Concepts',
-    },
-    {
         key: 'concepts.orders.orderList',
         path: `${CONCEPTS_PREFIX_PATH}/orders/order-list`,
         title: 'Order List',

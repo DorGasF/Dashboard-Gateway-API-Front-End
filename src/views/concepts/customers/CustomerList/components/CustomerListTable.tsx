@@ -1,41 +1,26 @@
 import { useMemo } from 'react'
-import Tag from '@/components/ui/Tag'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
 import useCustomerList from '../hooks/useCustomerList'
 import { Link, useNavigate } from 'react-router'
 import cloneDeep from 'lodash/cloneDeep'
-import { TbPencil, TbEye } from 'react-icons/tb'
+import { TbPencil } from 'react-icons/tb'
 import { useTranslation } from 'react-i18next'
 import type { OnSortParam, ColumnDef, Row } from '@/components/shared/DataTable'
 import type { Customer } from '../types'
 import type { TableQueries } from '@/@types/common'
 
-const statusColor: Record<string, string> = {
-    active: 'bg-emerald-200 dark:bg-emerald-200 text-gray-900 dark:text-gray-900',
-    blocked: 'bg-red-200 dark:bg-red-200 text-gray-900 dark:text-gray-900',
-}
-
 const NameColumn = ({ row }: { row: Customer }) => {
     return (
         <div className="flex items-center">
-            <Link
-                className={`hover:text-primary ml-2 rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100`}
-                to={`/concepts/customers/customer-details/${row.id}`}
-            >
+            <span className="rtl:mr-2 font-semibold text-gray-900 dark:text-gray-100">
                 {row.name}
-            </Link>
+            </span>
         </div>
     )
 }
 
-const ActionColumn = ({
-    onEdit,
-    onViewDetail,
-}: {
-    onEdit: () => void
-    onViewDetail: () => void
-}) => {
+const ActionColumn = ({ onEdit }: { onEdit: () => void }) => {
     const { t } = useTranslation()
 
     return (
@@ -47,15 +32,6 @@ const ActionColumn = ({
                     onClick={onEdit}
                 >
                     <TbPencil />
-                </div>
-            </Tooltip>
-            <Tooltip title={t('nav.table.view')}>
-                <div
-                    className={`text-xl cursor-pointer select-none font-semibold`}
-                    role="button"
-                    onClick={onViewDetail}
-                >
-                    <TbEye />
                 </div>
             </Tooltip>
         </div>
@@ -79,10 +55,6 @@ const CustomerListTable = () => {
 
     const handleEdit = (customer: Customer) => {
         navigate(`/concepts/customers/customer-edit/${customer.id}`)
-    }
-
-    const handleViewDetails = (customer: Customer) => {
-        navigate(`/concepts/customers/customer-details/${customer.id}`)
     }
 
     const columns: ColumnDef<Customer>[] = useMemo(
@@ -125,9 +97,6 @@ const CustomerListTable = () => {
                 cell: (props) => (
                     <ActionColumn
                         onEdit={() => handleEdit(props.row.original)}
-                        onViewDetail={() =>
-                            handleViewDetails(props.row.original)
-                        }
                     />
                 ),
             },

@@ -191,7 +191,7 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                     'nav.customerForm.phonePlaceholder',
                                 )}
                                 minLength={5}
-                                maxLength={20}
+                                maxLength={16}
                                 value={field.value}
                                 onChange={field.onChange}
                                 onBlur={field.onBlur}

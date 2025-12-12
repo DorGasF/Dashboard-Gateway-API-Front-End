@@ -29,7 +29,7 @@
             "updatedTitle": "Cliente atualizado",
             "createdMessage": "O cliente {{name}} foi cadastrado com sucesso.",
             "updatedMessage": "As informações do cliente {{name}} foram atualizadas.",
-            "genericClient": "o cliente",
+            "genericClient": "cliente",
             "unexpectedError": "Erro inesperado",
             "errors": {
                 "unexpected": "Erro inesperado ao criar cliente."
@@ -47,12 +47,34 @@
                 "CLIENT_UPDATED": "Cliente atualizado com sucesso."
             }
         },
+        "customerFormValidation": {
+            "invalidEmail": "E-mail inválido",
+            "emailMax": "O e-mail deve ter no máximo 254 caracteres",
+            "firstNameMax": "Máximo de 120 caracteres",
+            "lastNameMax": "Máximo de 120 caracteres",
+            "phoneMax": "Telefone muito longo",
+            "addressMax": "Máximo de 120 caracteres",
+            "streetNumberMax": "Máximo de 10 caracteres",
+            "complementMax": "Máximo de 40 caracteres",
+            "neighMax": "Máximo de 80 caracteres",
+            "cityMax": "Máximo de 80 caracteres",
+            "postcodeMax": "Máximo de 15 caracteres",
+            "stateMax": "Máximo de 5 caracteres",
+            "taxIdRequired": "Documento obrigatório",
+            "invalidCPF": "CPF inválido",
+            "invalidCNPJ": "CNPJ inválido"
+        },
         "conceptsProducts": {
             "scrumBoard": "Quadro Scrum",
             "products": "Produtos",
             "productList": "Lista",
             "productEdit": "Editar",
             "productCreate": "Criar"
+        },
+        "createCustomerDialog": {
+            "title": "Cadastrar Cliente",
+            "cancelButton": "Cancelar",
+            "createButton": "Criar Cliente"
         },
         "customerForm": {
             "overviewTitle": "Visão Geral",
@@ -61,6 +83,25 @@
             "email": "E-mail",
             "phoneNumber": "Telefone",
             "phonePlaceholder": "(DDD) 9XXXX-XXXX"
+        },
+        "addressSection": {
+            "title": "Informações de Endereço",
+            "complement": "Complemento",
+            "complementPlaceholder": "Apartamento / Complemento",
+            "street": "Rua",
+            "streetPlaceholder": "Rua",
+            "streetNumber": "Número",
+            "streetNumberPlaceholder": "Número",
+            "neigh": "Bairro",
+            "neighPlaceholder": "Bairro",
+            "city": "Cidade",
+            "cityPlaceholder": "Cidade",
+            "postcode": "CEP",
+            "postcodePlaceholder": "CEP",
+            "state": "Estado",
+            "statePlaceholder": "Estado / Província / Região (SP, NY)",
+            "taxId": "Documento",
+            "taxIdPlaceholder": "CPF ou CNPJ"
         },
         "conceptsProjects": {
             "projects": "Projetos",

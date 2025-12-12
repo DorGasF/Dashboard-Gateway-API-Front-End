@@ -40,15 +40,8 @@ type Subscription = {
 }
 
 export type GetCustomersListResponse = {
-    message: {
-        code: string
-        type: string
-        message: string
-    }
-    data: {
-        list: Customer[]
-        total: number
-    }
+    list: Customer[]
+    total: number
 }
 
 export type Filter = {
@@ -63,7 +56,6 @@ export type Customer = {
     lastName: string
     email: string
     img: string
-    taxId: string
     role: string
     lastOnline: number
     status: string
@@ -71,5 +63,5 @@ export type Customer = {
     orderHistory: OrderHistory[]
     paymentMethod: PaymentMethod[]
     subscription: Subscription[]
-    totalSpending: string
+    totalSpending: number
 }

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
+import BottomStickyBar from '@/components/template/BottomStickyBar'
 import OverviewSection from './OverviewSection'
 import AddressSection from './AddressSection'
 import isEmpty from 'lodash/isEmpty'
@@ -15,6 +16,7 @@ type CustomerFormProps = {
     onFormSubmit: (values: CustomerFormSchema) => void
     defaultValues?: Partial<CustomerFormSchema>
     newCustomer?: boolean
+    isModal?: boolean
 } & CommonProps
 
 const validationSchema = z.object({
@@ -86,6 +88,8 @@ const CustomerForm = ({
     onFormSubmit,
     defaultValues,
     newCustomer = false,
+    isModal = false,
+    children,
 }: CustomerFormProps) => {
     const {
         handleSubmit,
@@ -123,12 +127,38 @@ const CustomerForm = ({
             containerClassName="w-full"
             onSubmit={handleSubmit(onFormSubmit)}
         >
-            <Container className="px-4 md:px-6">
-                <div className="flex flex-col gap-6">
-                    <OverviewSection control={control} errors={errors} />
-                    <AddressSection control={control} errors={errors} />
+            <Container className={`px-4 md:px-6`}>
+                <div
+                    className={
+                        isModal
+                            ? 'flex flex-col gap-6'
+                            : 'grid grid-cols-12 gap-6 max-w-7xl mx-auto pt-6 pb-20'
+                    }
+                >
+                    {/* COLUNA 1 */}
+                    <div
+                        className={
+                            isModal ? 'w-full' : 'col-span-12 lg:col-span-7'
+                        }
+                    >
+                        <OverviewSection control={control} errors={errors} />
+                    </div>
+
+                    {/* COLUNA 2 */}
+                    <div
+                        className={
+                            isModal ? 'w-full' : 'col-span-12 lg:col-span-5'
+                        }
+                    >
+                        <AddressSection control={control} errors={errors} />
+                    </div>
                 </div>
             </Container>
+
+            {/* Sticky bar só fora do modal */}
+            {!isModal && (
+                <BottomStickyBar forceMode="fixed">{children}</BottomStickyBar>
+            )}
         </Form>
     )
 }
