@@ -10,11 +10,14 @@ type AddressSectionProps = FormSectionBaseProps
 const AddressSection = ({ control, errors }: AddressSectionProps) => {
     const { t } = useTranslation()
 
+    const onlyLetters = (v: string) => v.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ ]/g, '')
+
+    const onlyNumbers = (v: string) => v.replace(/[^0-9]/g, '')
+
     return (
         <Card>
             <h4 className="mb-6">{t('nav.addressSection.title')}</h4>
 
-            {/* Complement */}
             <FormItem
                 label={t('nav.addressSection.complement')}
                 invalid={Boolean(errors.complement)}
@@ -38,7 +41,7 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
             </FormItem>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Street */}
+                {/* Rua / Endereço */}
                 <FormItem
                     label={t('nav.addressSection.street')}
                     invalid={Boolean(errors.address)}
@@ -61,7 +64,7 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                     />
                 </FormItem>
 
-                {/* Street Number */}
+                {/* Número */}
                 <FormItem
                     label={t('nav.addressSection.streetNumber')}
                     invalid={Boolean(errors.street_number)}
@@ -78,13 +81,17 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                     'nav.addressSection.streetNumberPlaceholder',
                                 )}
                                 maxLength={10}
-                                {...field}
+                                value={field.value}
+                                onChange={(e) =>
+                                    field.onChange(onlyNumbers(e.target.value))
+                                }
+                                onBlur={field.onBlur}
                             />
                         )}
                     />
                 </FormItem>
 
-                {/* Neigh */}
+                {/* Bairro */}
                 <FormItem
                     label={t('nav.addressSection.neigh')}
                     invalid={Boolean(errors.neigh)}
@@ -100,13 +107,16 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                     'nav.addressSection.neighPlaceholder',
                                 )}
                                 maxLength={80}
-                                {...field}
+                                value={field.value}
+                                onChange={(e) =>
+                                    field.onChange(onlyLetters(e.target.value))
+                                }
                             />
                         )}
                     />
                 </FormItem>
 
-                {/* City */}
+                {/* Cidade */}
                 <FormItem
                     label={t('nav.addressSection.city')}
                     invalid={Boolean(errors.city)}
@@ -123,13 +133,16 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                     'nav.addressSection.cityPlaceholder',
                                 )}
                                 maxLength={80}
-                                {...field}
+                                value={field.value}
+                                onChange={(e) =>
+                                    field.onChange(onlyLetters(e.target.value))
+                                }
                             />
                         )}
                     />
                 </FormItem>
 
-                {/* Postal Code */}
+                {/* CEP */}
                 <FormItem
                     label={t('nav.addressSection.postcode')}
                     invalid={Boolean(errors.postcode)}
@@ -146,13 +159,17 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                     'nav.addressSection.postcodePlaceholder',
                                 )}
                                 maxLength={15}
-                                {...field}
+                                value={field.value}
+                                onChange={(e) =>
+                                    field.onChange(onlyNumbers(e.target.value))
+                                }
+                                onBlur={field.onBlur}
                             />
                         )}
                     />
                 </FormItem>
 
-                {/* State */}
+                {/* Estado / UF */}
                 <FormItem
                     label={t('nav.addressSection.state')}
                     invalid={Boolean(errors.state)}
@@ -169,13 +186,21 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                     'nav.addressSection.statePlaceholder',
                                 )}
                                 maxLength={5}
-                                {...field}
+                                value={field.value}
+                                onChange={(e) =>
+                                    field.onChange(
+                                        onlyLetters(
+                                            e.target.value,
+                                        ).toUpperCase(),
+                                    )
+                                }
+                                onBlur={field.onBlur}
                             />
                         )}
                     />
                 </FormItem>
 
-                {/* Tax ID */}
+                {/* CPF/CNPJ */}
                 <FormItem
                     label={t('nav.addressSection.taxId')}
                     invalid={Boolean(errors.tax_id)}
@@ -193,13 +218,9 @@ const AddressSection = ({ control, errors }: AddressSectionProps) => {
                                 )}
                                 maxLength={20}
                                 value={field.value}
-                                onChange={(e) => {
-                                    const numbersOnly = e.target.value.replace(
-                                        /[^0-9]/g,
-                                        '',
-                                    )
-                                    field.onChange(numbersOnly)
-                                }}
+                                onChange={(e) =>
+                                    field.onChange(onlyNumbers(e.target.value))
+                                }
                                 onBlur={field.onBlur}
                             />
                         )}

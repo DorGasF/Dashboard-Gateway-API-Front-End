@@ -5,13 +5,14 @@ import toast from '@/components/ui/toast'
 import { useNavigate } from 'react-router'
 import sleep from '@/utils/sleep'
 import { TbDeviceFloppy, TbArrowNarrowLeft } from 'react-icons/tb'
+import { useTranslation } from 'react-i18next'
 
 const EditArticleFooter = () => {
     const [isPublishing, setIsPublishing] = useState(false)
-
     const [isSaving, setIsSaving] = useState(false)
 
     const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const handleBack = () => {
         history.back()
@@ -20,9 +21,14 @@ const EditArticleFooter = () => {
     const handleSave = async () => {
         setIsSaving(true)
         await sleep(1000)
-        toast.push(<Notification type="success">Saved as draft</Notification>, {
-            placement: 'top-center',
-        })
+        toast.push(
+            <Notification type="success">
+                {t('nav.editArticleFooter.savedDraft')}
+            </Notification>,
+            {
+                placement: 'top-center',
+            },
+        )
         setIsSaving(false)
     }
 
@@ -30,7 +36,9 @@ const EditArticleFooter = () => {
         setIsPublishing(true)
         await sleep(1000)
         toast.push(
-            <Notification type="success">Article published</Notification>,
+            <Notification type="success">
+                {t('nav.editArticleFooter.published')}
+            </Notification>,
             { placement: 'top-center' },
         )
         setIsPublishing(false)
@@ -48,8 +56,9 @@ const EditArticleFooter = () => {
                         icon={<TbArrowNarrowLeft />}
                         onClick={handleBack}
                     >
-                        Back
+                        {t('nav.editArticleFooter.back')}
                     </Button>
+
                     <div className="flex items-center">
                         <Button
                             className="ltr:mr-3 rtl:ml-3"
@@ -58,15 +67,16 @@ const EditArticleFooter = () => {
                             loading={isSaving}
                             onClick={handleSave}
                         >
-                            Save
+                            {t('nav.editArticleFooter.save')}
                         </Button>
+
                         <Button
                             variant="solid"
                             type="button"
                             loading={isPublishing}
                             onClick={handlePublish}
                         >
-                            Publish
+                            {t('nav.editArticleFooter.publish')}
                         </Button>
                     </div>
                 </div>

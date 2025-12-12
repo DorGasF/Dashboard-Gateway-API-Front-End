@@ -11,12 +11,14 @@ import NoUserFound from '@/assets/svg/NoUserFound'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
 import useSWR from 'swr'
+import { useTranslation } from 'react-i18next'
 import type { CustomerFormSchema } from '../CustomerForm'
 import type { Customer } from '../CustomerList/types'
 
 const CustomerEdit = () => {
     const { id } = useParams()
     const navigate = useNavigate()
+    const { t } = useTranslation()
 
     const { data, isLoading } = useSWR(
         [`/api/customers${id}`, { id: id as string }],
@@ -35,9 +37,13 @@ const CustomerEdit = () => {
         await sleep(800)
         setIsSubmitting(false)
 
-        toast.push(<Notification type="success">Changes Saved!</Notification>, {
-            placement: 'top-center',
-        })
+        toast.push(
+            <Notification type="success">
+                {t('nav.customerEdit.toastChangesSaved')}
+            </Notification>,
+            { placement: 'top-center' },
+        )
+
         navigate('/concepts/customers/customer-list')
     }
 
@@ -71,7 +77,9 @@ const CustomerEdit = () => {
         setDeleteConfirmationOpen(true)
 
         toast.push(
-            <Notification type="success">Customer deleted!</Notification>,
+            <Notification type="success">
+                {t('nav.customerEdit.toastCustomerDeleted')}
+            </Notification>,
             { placement: 'top-center' },
         )
 
@@ -82,15 +90,17 @@ const CustomerEdit = () => {
 
     return (
         <>
-            {/* Se não encontrou o usuário */}
+            {/* Caso não encontre o cliente */}
             {!isLoading && !data && (
                 <div className="h-full flex flex-col items-center justify-center">
                     <NoUserFound height={280} width={280} />
-                    <h3 className="mt-8">No user found!</h3>
+                    <h3 className="mt-8">
+                        {t('nav.customerEdit.noUserFound')}
+                    </h3>
                 </div>
             )}
 
-            {/* Renderiza SEMPRE, mesmo enquanto carrega */}
+            {/* Renderiza sempre mesmo carregando */}
             <CustomerForm
                 defaultValues={getDefaultValues() as CustomerFormSchema}
                 newCustomer={false}
@@ -104,9 +114,9 @@ const CustomerEdit = () => {
                             variant="plain"
                             icon={<TbArrowNarrowLeft />}
                             onClick={handleBack}
-                            disabled={isLoading || !data}
+                            disabled={buttonsDisabled}
                         >
-                            Back
+                            {t('nav.customerEdit.back')}
                         </Button>
 
                         <div className="flex items-center">
@@ -118,37 +128,35 @@ const CustomerEdit = () => {
                                 }
                                 icon={<TbTrash />}
                                 onClick={handleDelete}
-                                disabled={isLoading || !data}
+                                disabled={buttonsDisabled}
                             >
-                                Delete
+                                {t('nav.customerEdit.delete')}
                             </Button>
 
                             <Button
                                 variant="solid"
                                 type="submit"
                                 loading={isSubmitting}
-                                disabled={isLoading || !data}
+                                disabled={buttonsDisabled}
                             >
-                                Save
+                                {t('nav.customerEdit.save')}
                             </Button>
                         </div>
                     </div>
                 </Container>
             </CustomerForm>
 
+            {/* CONFIRM DIALOG */}
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
                 type="danger"
-                title="Remove customers"
+                title={t('nav.customerEdit.deleteDialogTitle')}
                 onClose={handleCancel}
                 onRequestClose={handleCancel}
                 onCancel={handleCancel}
                 onConfirm={handleConfirmDelete}
             >
-                <p>
-                    Are you sure you want to remove this customer? This action
-                    can't be undone.
-                </p>
+                <p>{t('nav.customerEdit.deleteDialogMessage')}</p>
             </ConfirmDialog>
         </>
     )

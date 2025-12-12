@@ -62,7 +62,26 @@
             "stateMax": "Máximo de 5 caracteres",
             "taxIdRequired": "Documento obrigatório",
             "invalidCPF": "CPF inválido",
-            "invalidCNPJ": "CNPJ inválido"
+            "invalidCNPJ": "CNPJ inválido",
+            "dialCodeInvalid": "Código de discagem inválido",
+            "onlyNumbers": "Apenas números"
+        },
+        "editArticleFooter": {
+            "back": "Voltar",
+            "save": "Salvar",
+            "publish": "Publicar",
+            "savedDraft": "Salvo como rascunho",
+            "published": "Artigo publicado"
+        },
+        "customerEdit": {
+            "noUserFound": "Nenhum cliente encontrado!",
+            "back": "Voltar",
+            "delete": "Excluir",
+            "save": "Salvar",
+            "toastChangesSaved": "Alterações salvas!",
+            "toastCustomerDeleted": "Cliente excluído!",
+            "deleteDialogTitle": "Remover cliente",
+            "deleteDialogMessage": "Tem certeza de que deseja remover este cliente? Essa ação não poderá ser desfeita."
         },
         "conceptsProducts": {
             "scrumBoard": "Quadro Scrum",

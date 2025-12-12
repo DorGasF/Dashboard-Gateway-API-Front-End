@@ -29,21 +29,14 @@ const CustomerListActionTools = () => {
     const mapPayloadToBackend = (form: any) => {
         const full_name =
             `${form.firstName || ''} ${form.lastName || ''}`.trim()
-        const cpfCnpj = (form.tax_id || '').replace(/\D/g, '')
-        const zip_code = (form.postcode || '').replace(/\D/g, '')
-
-        const cell_phone =
-            form.dialCode && form.phoneLocal
-                ? `${form.dialCode}${form.phoneLocal}`.replace(/\D/g, '')
-                : (form.phoneLocal || '').replace(/\D/g, '')
 
         return {
             full_name,
-            cpfCnpj,
+            cpfCnpj: (form.tax_id || '').replace(/\D/g, ''),
             email: form.email || '',
-            cell_phone,
-            company_name: form.company_name || '',
-            zip_code,
+            dial_code: (form.dialCode || '').replace(/\s/g, ''),
+            phone_local: (form.phoneLocal || '').replace(/\D/g, ''),
+            zip_code: (form.postcode || '').replace(/\D/g, ''),
             street: form.address || '',
             street_number: form.street_number || '',
             complement: form.complement || '',

@@ -64,12 +64,21 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
         const newCountryList: Array<CountryOption> = JSON.parse(
             JSON.stringify(countryList),
         )
-
         return newCountryList.map((country) => {
             country.label = country.dialCode
             return country
         })
     }, [])
+
+    // Função que deixa digitar somente LETRAS e espaço
+    const allowOnlyLetters = (value: string) => {
+        return value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ ]/g, '')
+    }
+
+    // dialCode aceitando somente + e números
+    const sanitizeDialCode = (value: string) => {
+        return value.replace(/[^0-9+]/g, '')
+    }
 
     return (
         <Card>
@@ -91,7 +100,12 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 placeholder={t('nav.customerForm.firstName')}
                                 minLength={2}
                                 maxLength={59}
-                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) =>
+                                    field.onChange(
+                                        allowOnlyLetters(e.target.value),
+                                    )
+                                }
                             />
                         )}
                     />
@@ -112,7 +126,12 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                 placeholder={t('nav.customerForm.lastName')}
                                 minLength={2}
                                 maxLength={59}
-                                {...field}
+                                value={field.value || ''}
+                                onChange={(e) =>
+                                    field.onChange(
+                                        allowOnlyLetters(e.target.value),
+                                    )
+                                }
                             />
                         )}
                     />
@@ -163,11 +182,15 @@ const OverviewSection = ({ control, errors }: OverviewSectionProps) => {
                                     Control: CustomControl,
                                 }}
                                 placeholder=""
-                                value={dialCodeList.filter(
+                                value={dialCodeList.find(
                                     (option) => option.dialCode === field.value,
                                 )}
                                 onChange={(option) =>
-                                    field.onChange(option?.dialCode)
+                                    field.onChange(
+                                        sanitizeDialCode(
+                                            option?.dialCode || '',
+                                        ),
+                                    )
                                 }
                             />
                         )}
