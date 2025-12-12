@@ -1,20 +1,17 @@
-type PersonalInfo = {
-    location: string
-    title: string
-    birthday: string
-    phoneNumber: string
+export type PersonalInfo = {
     dialCode: string
+    phoneLocal: string
     address: string
-    postcode: string
+    street_number: string
+    neigh: string
     city: string
-    country: string
-    facebook: string
-    twitter: string
-    pinterest: string
-    linkedIn: string
+    postcode: string
+    state: string
+    complement: string
+    tax_id: string
 }
 
-type OrderHistory = {
+export type OrderHistory = {
     id: string
     item: string
     status: string
@@ -22,7 +19,7 @@ type OrderHistory = {
     date: number
 }
 
-type PaymentMethod = {
+export type PaymentMethod = {
     cardHolderName: string
     cardType: string
     expMonth: string
@@ -31,7 +28,7 @@ type PaymentMethod = {
     primary: boolean
 }
 
-type Subscription = {
+export type Subscription = {
     plan: string
     status: string
     billing: string

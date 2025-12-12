@@ -50,26 +50,26 @@ const CustomerEdit = () => {
     const getDefaultValues = () => {
         if (!data) return {}
 
-        const { firstName, lastName, email, personalInfo, img } = data
-
         return {
-            firstName,
-            lastName,
-            email,
-            img,
-            phoneLocal: personalInfo.phoneNumber,
-            dialCode: personalInfo.dialCode,
-            address: personalInfo.address,
-            city: personalInfo.city,
-            postcode: personalInfo.postcode,
-            neigh: personalInfo.neigh,
-            state: personalInfo.state,
-            complement: personalInfo.complement,
-            tax_id: personalInfo.tax_id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            img: data.img,
+            dialCode: data.personalInfo.dialCode || '',
+            phoneLocal: data.personalInfo.phoneLocal || '',
+            address: data.personalInfo.address || '',
+            street_number: data.personalInfo.street_number || '',
+            city: data.personalInfo.city || '',
+            postcode: data.personalInfo.postcode || '',
+            neigh: data.personalInfo.neigh || '',
+            state: data.personalInfo.state || '',
+            complement: data.personalInfo.complement || '',
+            tax_id: data.personalInfo.tax_id || '',
         }
     }
 
     const handleBack = () => history.back()
+
     const handleDelete = () => setDeleteConfirmationOpen(true)
     const handleCancel = () => setDeleteConfirmationOpen(false)
 
@@ -90,7 +90,6 @@ const CustomerEdit = () => {
 
     return (
         <>
-            {/* Caso não encontre o cliente */}
             {!isLoading && !data && (
                 <div className="h-full flex flex-col items-center justify-center">
                     <NoUserFound height={280} width={280} />
@@ -100,7 +99,6 @@ const CustomerEdit = () => {
                 </div>
             )}
 
-            {/* Renderiza sempre mesmo carregando */}
             <CustomerForm
                 defaultValues={getDefaultValues() as CustomerFormSchema}
                 newCustomer={false}
@@ -146,7 +144,6 @@ const CustomerEdit = () => {
                 </Container>
             </CustomerForm>
 
-            {/* CONFIRM DIALOG */}
             <ConfirmDialog
                 isOpen={deleteConfirmationOpen}
                 type="danger"

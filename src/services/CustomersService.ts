@@ -13,12 +13,14 @@ export async function apiGetCustomersList<T, U extends Record<string, unknown>>(
 export async function apiGetCustomer<T, U extends Record<string, unknown>>({
     id,
     ...params
-}: U) {
-    return ApiService.fetchDataWithAxios<T>({
+}: U): Promise<T> {
+    const res = await ApiService.fetchDataWithAxios<any>({
         url: `/v1/client/getCustomerIdentifier?i=${id}`,
         method: 'get',
         params,
     })
+
+    return res?.data as T
 }
 
 export async function apiGetCustomerLog<T, U extends Record<string, unknown>>({
