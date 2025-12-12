@@ -10,6 +10,7 @@ import Dialog from '@/components/ui/Dialog'
 import type { ReactNode } from 'react'
 import type { DialogProps } from '@/components/ui/Dialog'
 import type { ButtonProps } from '@/components/ui/Button'
+import { useTranslation } from 'react-i18next'
 
 type StatusType = 'info' | 'success' | 'warning' | 'danger'
 
@@ -51,7 +52,7 @@ const StatusIcon = ({ status }: { status: StatusType }) => {
         case 'warning':
             return (
                 <Avatar
-                    className="text-amber-600 bg-amber-100 dark:text-amber-100"
+                    className="bg-amber-100 text-amber-600 dark:text-amber-100"
                     shape="circle"
                 >
                     <span className="text-2xl">
@@ -62,7 +63,7 @@ const StatusIcon = ({ status }: { status: StatusType }) => {
         case 'danger':
             return (
                 <Avatar
-                    className="text-red-600 bg-red-100 dark:text-red-100"
+                    className="bg-red-100 text-red-600 dark:text-red-100"
                     shape="circle"
                 >
                     <span className="text-2xl">
@@ -70,36 +71,33 @@ const StatusIcon = ({ status }: { status: StatusType }) => {
                     </span>
                 </Avatar>
             )
-
         default:
             return null
     }
 }
 
 const ConfirmDialog = (props: ConfirmDialogProps) => {
+    const { t } = useTranslation()
+
     const {
         type = 'info',
         title,
         children,
         onCancel,
         onConfirm,
-        cancelText = 'Cancel',
-        confirmText = 'Confirm',
+        cancelText,
+        confirmText,
         confirmButtonProps,
         cancelButtonProps,
         ...rest
     } = props
 
-    const handleCancel = () => {
-        onCancel?.()
-    }
-
-    const handleConfirm = () => {
-        onConfirm?.()
-    }
-
     return (
-        <Dialog contentClassName="pb-0 px-0" {...rest}>
+        <Dialog
+            {...rest}
+            overlayClassName="flex items-center justify-center"
+            contentClassName="pb-0 px-0 max-h-[90vh] overflow-y-auto"
+        >
             <div className="px-6 pb-6 pt-2 flex">
                 <div>
                     <StatusIcon status={type} />
@@ -109,22 +107,19 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
                     {children}
                 </div>
             </div>
+
             <div className="px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-2xl rounded-br-2xl">
                 <div className="flex justify-end items-center gap-2">
-                    <Button
-                        size="sm"
-                        onClick={handleCancel}
-                        {...cancelButtonProps}
-                    >
-                        {cancelText}
+                    <Button size="sm" onClick={onCancel} {...cancelButtonProps}>
+                        {cancelText ?? t('nav.confirmDialog.cancel')}
                     </Button>
                     <Button
                         size="sm"
                         variant="solid"
-                        onClick={handleConfirm}
+                        onClick={onConfirm}
                         {...confirmButtonProps}
                     >
-                        {confirmText}
+                        {confirmText ?? t('nav.confirmDialog.confirm')}
                     </Button>
                 </div>
             </div>

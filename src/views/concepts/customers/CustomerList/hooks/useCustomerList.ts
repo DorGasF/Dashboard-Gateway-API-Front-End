@@ -43,8 +43,8 @@ export default function useCustomerList() {
     )
 
     return {
-        customerList: data?.data?.list || [],
-        customerListTotal: data?.data?.total || 0,
+        customerList: data?.list || [],
+        customerListTotal: data?.total || 0,
         error,
         isLoading,
         tableData,

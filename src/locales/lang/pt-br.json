@@ -32,7 +32,7 @@
             "genericClient": "cliente",
             "unexpectedError": "Erro inesperado",
             "errors": {
-                "unexpected": "Erro inesperado ao criar cliente."
+                "unexpected": "Houve um problema interno no sistema de clientes. Nossos engenheiros já foram notificados."
             },
             "backend": {
                 "INVALID_JSON": "O formato enviado não é válido.",
@@ -82,6 +82,23 @@
             "toastCustomerDeleted": "Cliente excluído!",
             "deleteDialogTitle": "Remover cliente",
             "deleteDialogMessage": "Tem certeza de que deseja remover este cliente? Essa ação não poderá ser desfeita."
+        },
+        "customerListSelected": {
+            "customers": "Clientes",
+            "selected": "selecionados",
+            "delete": "Excluir",
+            "message": "Mensagem",
+            "removeTitle": "Remover clientes",
+            "removeDescription": "Tem certeza de que deseja remover esses clientes? Esta ação não pode ser desfeita.",
+            "sendMessageTitle": "Enviar mensagem",
+            "sendMessageSubtitle": "Enviar mensagem para os seguintes clientes",
+            "cancel": "Cancelar",
+            "send": "Enviar",
+            "messageSent": "Mensagem enviada com sucesso!"
+        },
+        "confirmDialog": {
+            "cancel": "Cancelar",
+            "confirm": "Confirmar"
         },
         "conceptsProducts": {
             "scrumBoard": "Quadro Scrum",

@@ -2,12 +2,14 @@ import ApiService from './ApiService'
 
 export async function apiGetCustomersList<T, U extends Record<string, unknown>>(
     params: U,
-) {
-    return ApiService.fetchDataWithAxios<T>({
+): Promise<T> {
+    const res = await ApiService.fetchDataWithAxios<any>({
         url: '/v1/client/getCustomersList',
         method: 'get',
         params,
     })
+
+    return res?.data as T
 }
 
 export async function apiGetCustomer<T, U extends Record<string, unknown>>({

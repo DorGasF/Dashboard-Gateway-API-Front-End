@@ -4,24 +4,30 @@ import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { apiGetCustomer } from '@/services/CustomersService'
+import { apiGetCustomer, apiCreateCustomer } from '@/services/CustomersService'
 import CustomerForm from '../CustomerForm'
-import sleep from '@/utils/sleep'
 import NoUserFound from '@/assets/svg/NoUserFound'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
-import useSWR from 'swr'
+import useSWR, { useSWRConfig } from 'swr'
 import { useTranslation } from 'react-i18next'
 import type { CustomerFormSchema } from '../CustomerForm'
 import type { Customer } from '../CustomerList/types'
+
+const translateBackendError = (code: string, t: any) => {
+    return t(`nav.conceptsCustomers.backend.${code}`, {
+        defaultValue: t('nav.conceptsCustomers.errors.unexpected'),
+    })
+}
 
 const CustomerEdit = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { t } = useTranslation()
+    const { mutate } = useSWRConfig()
 
     const { data, isLoading } = useSWR(
-        [`/api/customers${id}`, { id: id as string }],
+        id ? [`/api/customers${id}`, { id }] : null,
         ([_, params]) => apiGetCustomer<Customer, { id: string }>(params),
         {
             revalidateOnFocus: false,
@@ -32,19 +38,114 @@ const CustomerEdit = () => {
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    const mapPayloadToBackend = (form: CustomerFormSchema) => {
+        const full_name =
+            `${form.firstName || ''} ${form.lastName || ''}`.trim()
+
+        return {
+            full_name,
+            cpfCnpj: (form.tax_id || '').replace(/\D/g, ''),
+            email: form.email || '',
+            dial_code: (form.dialCode || '').replace(/\s/g, ''),
+            phone_local: (form.phoneLocal || '').replace(/\D/g, ''),
+            zip_code: (form.postcode || '').replace(/\D/g, ''),
+            street: form.address || '',
+            street_number: form.street_number || '',
+            complement: form.complement || '',
+            neigh: form.neigh || '',
+            city: form.city || '',
+            uf: form.state || '',
+        }
+    }
+
+    const handleSave = async (payload: CustomerFormSchema) => {
+        try {
+            const mapped = mapPayloadToBackend(payload)
+
+            const resp = await apiCreateCustomer<{
+                message: { type: string; message: string; code: string }
+                data?: any
+            }>(mapped)
+
+            const code = resp?.message?.code
+            const isError = resp?.message?.type === 'error'
+            const nome = resp?.data?.full_name
+
+            if (isError) {
+                const text = translateBackendError(code, t)
+                toast.push(
+                    <Notification
+                        title={t('nav.conceptsCustomers.error')}
+                        type="danger"
+                    >
+                        {text}
+                    </Notification>,
+                    { placement: 'bottom-end' },
+                )
+                return false
+            }
+
+            if (code === 'CLIENT_CREATED') {
+                toast.push(
+                    <Notification
+                        title={t('nav.conceptsCustomers.createdTitle')}
+                        type="success"
+                    >
+                        {t('nav.conceptsCustomers.createdMessage', {
+                            name: nome,
+                        })}
+                    </Notification>,
+                    { placement: 'bottom-end' },
+                )
+            } else if (code === 'CLIENT_UPDATED') {
+                toast.push(
+                    <Notification
+                        title={t('nav.conceptsCustomers.updatedTitle')}
+                        type="info"
+                    >
+                        {t('nav.conceptsCustomers.updatedMessage', {
+                            name: nome,
+                        })}
+                    </Notification>,
+                    { placement: 'bottom-end' },
+                )
+            }
+
+            return true
+        } catch {
+            const text = t('nav.conceptsCustomers.errors.unexpected')
+            toast.push(
+                <Notification
+                    title={t('nav.conceptsCustomers.unexpectedError')}
+                    type="danger"
+                >
+                    {text}
+                </Notification>,
+                { placement: 'bottom-end' },
+            )
+            return false
+        }
+    }
+
     const handleFormSubmit = async (values: CustomerFormSchema) => {
         setIsSubmitting(true)
-        await sleep(800)
-        setIsSubmitting(false)
 
-        toast.push(
-            <Notification type="success">
-                {t('nav.customerEdit.toastChangesSaved')}
-            </Notification>,
-            { placement: 'top-center' },
-        )
+        const ok = await handleSave(values)
+
+        if (!ok) {
+            setIsSubmitting(false)
+            return
+        }
+
+        if (id) {
+            mutate([`/api/customers${id}`, { id }], undefined, {
+                revalidate: true,
+            })
+        }
 
         navigate('/concepts/customers/customer-list')
+
+        setTimeout(() => setIsSubmitting(false), 350)
     }
 
     const getDefaultValues = () => {
@@ -54,7 +155,6 @@ const CustomerEdit = () => {
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
-            img: data.img,
             dialCode: data.personalInfo.dialCode || '',
             phoneLocal: data.personalInfo.phoneLocal || '',
             address: data.personalInfo.address || '',
@@ -74,7 +174,7 @@ const CustomerEdit = () => {
     const handleCancel = () => setDeleteConfirmationOpen(false)
 
     const handleConfirmDelete = () => {
-        setDeleteConfirmationOpen(true)
+        setDeleteConfirmationOpen(false)
 
         toast.push(
             <Notification type="success">
@@ -90,15 +190,6 @@ const CustomerEdit = () => {
 
     return (
         <>
-            {!isLoading && !data && (
-                <div className="h-full flex flex-col items-center justify-center">
-                    <NoUserFound height={280} width={280} />
-                    <h3 className="mt-8">
-                        {t('nav.customerEdit.noUserFound')}
-                    </h3>
-                </div>
-            )}
-
             <CustomerForm
                 defaultValues={getDefaultValues() as CustomerFormSchema}
                 newCustomer={false}
@@ -107,7 +198,6 @@ const CustomerEdit = () => {
                 <Container>
                     <div className="flex items-center justify-between px-8">
                         <Button
-                            className="ltr:mr-3 rtl:ml-3"
                             type="button"
                             variant="plain"
                             icon={<TbArrowNarrowLeft />}
@@ -117,9 +207,8 @@ const CustomerEdit = () => {
                             {t('nav.customerEdit.back')}
                         </Button>
 
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-3">
                             <Button
-                                className="ltr:mr-3 rtl:ml-3"
                                 type="button"
                                 customColorClass={() =>
                                     'border-error ring-1 ring-error text-error hover:border-error hover:ring-error hover:text-error bg-transparent'
