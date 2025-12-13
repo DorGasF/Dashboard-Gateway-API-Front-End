@@ -46,7 +46,7 @@ const StickyFooter = (props: StickyFooterProps) => {
                     className,
                     isSticky
                         ? classNames(
-                              'sticky bottom-0 z-[60] bg-white dark:bg-gray-800',
+                              'sticky bottom-0 z-[20] bg-white dark:bg-gray-800',
                               stickyClass,
                           )
                         : defaultClass,
