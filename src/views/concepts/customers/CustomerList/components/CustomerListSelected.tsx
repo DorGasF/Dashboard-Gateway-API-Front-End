@@ -66,10 +66,8 @@ const CustomerListSelected = () => {
                 )
 
                 if (newList.length === 0 && newTotal > 0) {
-                    // Página ficou vazia → revalidação obrigatória
                     await mutate()
                 } else {
-                    // Atualização local rápida
                     mutate({ list: newList, total: newTotal }, false)
                 }
             }

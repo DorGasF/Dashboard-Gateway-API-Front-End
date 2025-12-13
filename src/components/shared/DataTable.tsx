@@ -10,9 +10,9 @@ import Table from '@/components/ui/Table'
 import Pagination from '@/components/ui/Pagination'
 import Select from '@/components/ui/Select'
 import Checkbox from '@/components/ui/Checkbox'
-import TableRowSkeleton from './loaders/TableRowSkeleton'
 import Loading from './Loading'
 import FileNotFound from '@/assets/svg/FileNotFound'
+import Skeleton from '@/components/ui/Skeleton'
 import {
     useReactTable,
     getCoreRowModel,
@@ -31,6 +31,8 @@ import type { CheckboxProps } from '@/components/ui/Checkbox'
 import { useTranslation } from 'react-i18next'
 
 export type OnSortParam = { order: 'asc' | 'desc' | ''; key: string | number }
+
+const ROW_HEIGHT = 56
 
 type DataTableProps<T> = {
     columns: ColumnDef<T>[]
@@ -82,7 +84,7 @@ const IndeterminateCheckbox = (props: IndeterminateCheckboxProps) => {
         if (typeof indeterminate === 'boolean' && ref.current) {
             ref.current.indeterminate = !rest.checked && indeterminate
         }
-    }, [ref, indeterminate, rest.checked])
+    }, [indeterminate, rest.checked])
 
     const handleChange = (e: CheckBoxChangeEvent) => {
         onChange(e)
@@ -132,7 +134,7 @@ function DataTable<T>(props: DataTableProps<T>) {
     } = props
 
     const { pageSize, pageIndex, total } = pagingData
-    const [sorting, setSorting] = useState<ColumnSort[] | null>(null)
+    const [sorting, setSorting] = useState<ColumnSort[]>([])
     const { t } = useTranslation()
 
     const pageSizeOption = useMemo(
@@ -145,86 +147,62 @@ function DataTable<T>(props: DataTableProps<T>) {
     )
 
     useEffect(() => {
-        if (Array.isArray(sorting)) {
-            const sortOrder =
-                sorting.length > 0 ? (sorting[0].desc ? 'desc' : 'asc') : ''
-            const id = sorting.length > 0 ? sorting[0].id : ''
-            onSort?.({ order: sortOrder, key: id })
-        }
-    }, [sorting, onSort])
+        const sort = sorting[0]
 
-    const handleIndeterminateCheckBoxChange = (
-        checked: boolean,
-        rows: Row<T>[],
-    ) => {
-        if (!loading) {
-            onIndeterminateCheckBoxChange?.(checked, rows)
+        if (!sort) {
+            onSort?.({ order: '', key: '' })
+            return
         }
-    }
 
-    const handleCheckBoxChange = (checked: boolean, row: T) => {
-        if (!loading) {
-            onCheckBoxChange?.(checked, row)
-        }
-    }
+        onSort?.({
+            order: sort.desc ? 'desc' : 'asc',
+            key: sort.id,
+        })
+    }, [sorting])
 
     const finalColumns: ColumnDef<T>[] = useMemo(() => {
-        const columns = columnsProp
-
-        if (selectable) {
-            return [
-                {
-                    id: 'select',
-                    maxSize: 50,
-                    header: ({ table }) => (
-                        <IndeterminateCheckbox
-                            checked={
-                                indeterminateCheckboxChecked
-                                    ? indeterminateCheckboxChecked(
-                                          table.getRowModel().rows,
-                                      )
-                                    : table.getIsAllRowsSelected()
-                            }
-                            indeterminate={table.getIsSomeRowsSelected()}
-                            onChange={table.getToggleAllRowsSelectedHandler()}
-                            onIndeterminateCheckBoxChange={(e) => {
-                                handleIndeterminateCheckBoxChange(
-                                    e.target.checked,
-                                    table.getRowModel().rows,
-                                )
-                            }}
-                        />
-                    ),
-                    cell: ({ row }) => (
-                        <IndeterminateCheckbox
-                            checked={
-                                checkboxChecked
-                                    ? checkboxChecked(row.original)
-                                    : row.getIsSelected()
-                            }
-                            disabled={!row.getCanSelect()}
-                            indeterminate={row.getIsSomeSelected()}
-                            onChange={row.getToggleSelectedHandler()}
-                            onCheckBoxChange={(e) =>
-                                handleCheckBoxChange(
-                                    e.target.checked,
-                                    row.original,
-                                )
-                            }
-                        />
-                    ),
-                },
-                ...columns,
-            ]
-        }
-        return columns
-    }, [
-        columnsProp,
-        selectable,
-        loading,
-        checkboxChecked,
-        indeterminateCheckboxChecked,
-    ])
+        if (!selectable) return columnsProp
+        return [
+            {
+                id: 'select',
+                size: 50,
+                header: ({ table }) => (
+                    <IndeterminateCheckbox
+                        checked={
+                            indeterminateCheckboxChecked
+                                ? indeterminateCheckboxChecked(
+                                      table.getRowModel().rows,
+                                  )
+                                : table.getIsAllRowsSelected()
+                        }
+                        indeterminate={table.getIsSomeRowsSelected()}
+                        onChange={table.getToggleAllRowsSelectedHandler()}
+                        onIndeterminateCheckBoxChange={(e) =>
+                            onIndeterminateCheckBoxChange?.(
+                                e.target.checked,
+                                table.getRowModel().rows,
+                            )
+                        }
+                    />
+                ),
+                cell: ({ row }) => (
+                    <IndeterminateCheckbox
+                        checked={
+                            checkboxChecked
+                                ? checkboxChecked(row.original)
+                                : row.getIsSelected()
+                        }
+                        indeterminate={row.getIsSomeSelected()}
+                        onChange={row.getToggleSelectedHandler()}
+                        onCheckBoxChange={(e) =>
+                            onCheckBoxChange?.(e.target.checked, row.original)
+                        }
+                    />
+                ),
+            },
+            ...columnsProp,
+        ]
+    }, [columnsProp, selectable, checkboxChecked, indeterminateCheckboxChecked])
 
     const table = useReactTable({
         data,
@@ -235,140 +213,145 @@ function DataTable<T>(props: DataTableProps<T>) {
         getSortedRowModel: getSortedRowModel(),
         manualPagination: true,
         manualSorting: true,
-        onSortingChange: (sorter) => {
-            setSorting(sorter as ColumnSort[])
-        },
-        state: {
-            sorting: sorting as ColumnSort[],
-        },
+        onSortingChange: (sorter) => setSorting(sorter as ColumnSort[]),
+        state: { sorting },
     })
 
-    const resetSorting = () => {
-        table.resetSorting()
-    }
-
-    const resetSelected = () => {
-        table.resetRowSelection(true)
-    }
-
     useImperativeHandle(ref, () => ({
-        resetSorting,
-        resetSelected,
+        resetSorting: () => table.resetSorting(),
+        resetSelected: () => table.resetRowSelection(true),
     }))
-
-    const handlePaginationChange = (page: number) => {
-        if (!loading) {
-            resetSelected()
-            onPaginationChange?.(page)
-        }
-    }
-
-    const handleSelectChange = (value?: number) => {
-        if (!loading) {
-            onSelectChange?.(Number(value))
-        }
-    }
 
     return (
         <Loading loading={Boolean(loading && data.length !== 0)} type="cover">
-            <Table {...rest}>
+            <Table {...rest} style={{ tableLayout: 'fixed' }}>
                 <THead>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <Tr key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <Th
-                                        key={header.id}
-                                        colSpan={header.colSpan}
-                                    >
-                                        {header.isPlaceholder ? null : (
-                                            <div
-                                                className={classNames(
-                                                    header.column.getCanSort() &&
-                                                        'cursor-pointer select-none point',
-                                                    loading &&
-                                                        'pointer-events-none',
-                                                )}
-                                                onClick={header.column.getToggleSortingHandler()}
-                                            >
-                                                {flexRender(
-                                                    header.column.columnDef
-                                                        .header,
-                                                    header.getContext(),
-                                                )}
-                                                {header.column.getCanSort() && (
-                                                    <Sorter
-                                                        sort={header.column.getIsSorted()}
-                                                    />
-                                                )}
-                                            </div>
-                                        )}
-                                    </Th>
-                                )
-                            })}
+                            {headerGroup.headers.map((header) => (
+                                <Th
+                                    key={header.id}
+                                    colSpan={header.colSpan}
+                                    style={{
+                                        width: header.getSize(),
+                                        minWidth: header.getSize(),
+                                        maxWidth: header.getSize(),
+                                    }}
+                                >
+                                    {!header.isPlaceholder && (
+                                        <div
+                                            className={classNames(
+                                                header.column.getCanSort() &&
+                                                    'cursor-pointer select-none point',
+                                                loading &&
+                                                    'pointer-events-none',
+                                            )}
+                                            onClick={header.column.getToggleSortingHandler()}
+                                        >
+                                            {flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext(),
+                                            )}
+                                            {header.column.getCanSort() && (
+                                                <Sorter
+                                                    sort={header.column.getIsSorted()}
+                                                />
+                                            )}
+                                        </div>
+                                    )}
+                                </Th>
+                            ))}
                         </Tr>
                     ))}
                 </THead>
 
-                {loading && data.length === 0 ? (
-                    <TableRowSkeleton
-                        columns={(finalColumns as T[]).length}
-                        rows={pagingData.pageSize}
-                    />
-                ) : (
-                    <TBody>
-                        {noData ? (
-                            <Tr>
-                                <Td
-                                    className="hover:bg-transparent"
-                                    colSpan={finalColumns.length}
+                <TBody>
+                    {Array.from({ length: pageSize }).map((_, index) => {
+                        const row = table.getRowModel().rows[index]
+
+                        if (loading && data.length === 0) {
+                            return (
+                                <Tr
+                                    key={`skeleton-${index}`}
+                                    style={{ height: ROW_HEIGHT }}
                                 >
-                                    <div className="flex flex-col items-center gap-4">
-                                        {customNoDataIcon ? (
-                                            customNoDataIcon
-                                        ) : (
-                                            <>
-                                                <FileNotFound />
-                                                <span className="font-semibold">
-                                                    {t('nav.pagination.noData')}
-                                                </span>
-                                            </>
-                                        )}
-                                    </div>
-                                </Td>
-                            </Tr>
-                        ) : (
-                            table
-                                .getRowModel()
-                                .rows.slice(0, pageSize)
-                                .map((row) => {
+                                    {finalColumns.map((_, col) => (
+                                        <Td
+                                            key={col}
+                                            style={{
+                                                width: table
+                                                    .getAllLeafColumns()
+                                                    [col]?.getSize(),
+                                                overflow: 'hidden',
+                                            }}
+                                        >
+                                            <Skeleton className="w-full" />
+                                        </Td>
+                                    ))}
+                                </Tr>
+                            )
+                        }
+
+                        if (noData && index === 0) {
+                            return (
+                                <Tr
+                                    key="no-data"
+                                    style={{ height: ROW_HEIGHT }}
+                                >
+                                    <Td colSpan={finalColumns.length}>
+                                        <div className="flex flex-col items-center gap-4">
+                                            {customNoDataIcon ?? (
+                                                <>
+                                                    <FileNotFound />
+                                                    <span className="font-semibold">
+                                                        {t(
+                                                            'nav.pagination.noData',
+                                                        )}
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </Td>
+                                </Tr>
+                            )
+                        }
+
+                        return (
+                            <Tr
+                                key={row?.id ?? `empty-${index}`}
+                                style={{ height: ROW_HEIGHT }}
+                            >
+                                {finalColumns.map((_, colIndex) => {
+                                    const cell =
+                                        row?.getVisibleCells()[colIndex]
                                     return (
-                                        <Tr key={row.id}>
-                                            {row
-                                                .getVisibleCells()
-                                                .map((cell) => {
-                                                    return (
-                                                        <Td
-                                                            key={cell.id}
-                                                            style={{
-                                                                width: cell.column.getSize(),
-                                                            }}
-                                                        >
-                                                            {flexRender(
-                                                                cell.column
-                                                                    .columnDef
-                                                                    .cell,
-                                                                cell.getContext(),
-                                                            )}
-                                                        </Td>
-                                                    )
-                                                })}
-                                        </Tr>
+                                        <Td
+                                            key={colIndex}
+                                            style={{
+                                                width: cell?.column.getSize(),
+                                                minWidth:
+                                                    cell?.column.getSize(),
+                                                maxWidth:
+                                                    cell?.column.getSize(),
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {cell
+                                                ? flexRender(
+                                                      cell.column.columnDef
+                                                          .cell,
+                                                      cell.getContext(),
+                                                  )
+                                                : null}
+                                        </Td>
                                     )
-                                })
-                        )}
-                    </TBody>
-                )}
+                                })}
+                            </Tr>
+                        )
+                    })}
+                </TBody>
             </Table>
 
             <div className="flex items-center justify-between mt-4">
@@ -376,7 +359,7 @@ function DataTable<T>(props: DataTableProps<T>) {
                     pageSize={pageSize}
                     currentPage={pageIndex}
                     total={total}
-                    onChange={handlePaginationChange}
+                    onChange={onPaginationChange}
                 />
                 <div style={{ minWidth: 130 }}>
                     <Select
@@ -388,7 +371,9 @@ function DataTable<T>(props: DataTableProps<T>) {
                             (option) => option.value === pageSize,
                         )}
                         options={pageSizeOption}
-                        onChange={(option) => handleSelectChange(option?.value)}
+                        onChange={(option) =>
+                            onSelectChange?.(Number(option?.value))
+                        }
                     />
                 </div>
             </div>
