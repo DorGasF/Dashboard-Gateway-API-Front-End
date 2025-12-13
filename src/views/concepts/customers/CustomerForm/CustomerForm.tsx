@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
@@ -18,6 +18,7 @@ type CustomerFormProps = {
     defaultValues?: Partial<CustomerFormSchema>
     newCustomer?: boolean
     isModal?: boolean
+    onDirtyChange?: (dirty: boolean) => void
 } & CommonProps
 
 const CustomerForm = ({
@@ -26,6 +27,7 @@ const CustomerForm = ({
     newCustomer = false,
     isModal = false,
     children,
+    onDirtyChange,
 }: CustomerFormProps) => {
     const { t } = useTranslation()
 
@@ -134,7 +136,7 @@ const CustomerForm = ({
     const {
         handleSubmit,
         reset,
-        formState: { errors },
+        formState: { errors, isDirty },
         control,
     } = useForm<CustomerFormSchema>({
         defaultValues: {
@@ -155,6 +157,12 @@ const CustomerForm = ({
         },
         resolver: zodResolver(validationSchema),
     })
+
+    useEffect(() => {
+        if (onDirtyChange) {
+            onDirtyChange(isDirty)
+        }
+    }, [isDirty, onDirtyChange])
 
     useEffect(() => {
         if (!isEmpty(defaultValues)) reset(defaultValues)

@@ -85,7 +85,9 @@
         },
         "customerListSelected": {
             "customers": "Clientes",
+            "customer": "Cliente",
             "selected": "selecionados",
+            "selectedSingular": "selecionado",
             "delete": "Excluir",
             "message": "Mensagem",
             "removeTitle": "Remover clientes",
@@ -94,7 +96,13 @@
             "sendMessageSubtitle": "Enviar mensagem para os seguintes clientes",
             "cancel": "Cancelar",
             "send": "Enviar",
-            "messageSent": "Mensagem enviada com sucesso!"
+            "messageSent": "Mensagem enviada com sucesso!",
+            "toastRemoveSingle": "1 cliente removido",
+            "toastRemoveMultiple": "{{count}} clientes removidos",
+            "toastBlockedSingle": "1 não removido",
+            "toastBlockedMultiple": "{{count}} não removidos",
+            "toastNotAllowed": "Não é possível remover clientes que já foram atrelados a uma cobrança.",
+            "toastError": "Não foi possível concluir a operação. Tente novamente."
         },
         "confirmDialog": {
             "cancel": "Cancelar",

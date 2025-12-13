@@ -6,7 +6,6 @@ import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { apiGetCustomer, apiCreateCustomer } from '@/services/CustomersService'
 import CustomerForm from '../CustomerForm'
-import NoUserFound from '@/assets/svg/NoUserFound'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
 import useSWR, { useSWRConfig } from 'swr'
@@ -37,6 +36,7 @@ const CustomerEdit = () => {
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [hasChanges, setHasChanges] = useState(false)
 
     const mapPayloadToBackend = (form: CustomerFormSchema) => {
         const full_name =
@@ -85,19 +85,7 @@ const CustomerEdit = () => {
                 return false
             }
 
-            if (code === 'CLIENT_CREATED') {
-                toast.push(
-                    <Notification
-                        title={t('nav.conceptsCustomers.createdTitle')}
-                        type="success"
-                    >
-                        {t('nav.conceptsCustomers.createdMessage', {
-                            name: nome,
-                        })}
-                    </Notification>,
-                    { placement: 'bottom-end' },
-                )
-            } else if (code === 'CLIENT_UPDATED') {
+            if (code === 'CLIENT_UPDATED') {
                 toast.push(
                     <Notification
                         title={t('nav.conceptsCustomers.updatedTitle')}
@@ -113,13 +101,12 @@ const CustomerEdit = () => {
 
             return true
         } catch {
-            const text = t('nav.conceptsCustomers.errors.unexpected')
             toast.push(
                 <Notification
                     title={t('nav.conceptsCustomers.unexpectedError')}
                     type="danger"
                 >
-                    {text}
+                    {t('nav.conceptsCustomers.errors.unexpected')}
                 </Notification>,
                 { placement: 'bottom-end' },
             )
@@ -186,7 +173,7 @@ const CustomerEdit = () => {
         navigate('/concepts/customers/customer-list')
     }
 
-    const buttonsDisabled = isLoading || !data || isSubmitting
+    const buttonsDisabled = isLoading || !data || isSubmitting || !hasChanges
 
     return (
         <>
@@ -194,6 +181,7 @@ const CustomerEdit = () => {
                 defaultValues={getDefaultValues() as CustomerFormSchema}
                 newCustomer={false}
                 onFormSubmit={handleFormSubmit}
+                onDirtyChange={setHasChanges}
             >
                 <Container>
                     <div className="flex items-center justify-between px-8">
@@ -202,7 +190,7 @@ const CustomerEdit = () => {
                             variant="plain"
                             icon={<TbArrowNarrowLeft />}
                             onClick={handleBack}
-                            disabled={buttonsDisabled}
+                            disabled={isLoading || isSubmitting}
                         >
                             {t('nav.customerEdit.back')}
                         </Button>
@@ -215,7 +203,7 @@ const CustomerEdit = () => {
                                 }
                                 icon={<TbTrash />}
                                 onClick={handleDelete}
-                                disabled={buttonsDisabled}
+                                disabled={isLoading || isSubmitting}
                             >
                                 {t('nav.customerEdit.delete')}
                             </Button>

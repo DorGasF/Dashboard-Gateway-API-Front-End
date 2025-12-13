@@ -45,3 +45,16 @@ export async function apiCreateCustomer<
         data: payload,
     })
 }
+
+export async function apiRemoveCustomers<
+    T = any,
+    U extends { identifiers: string[] } = { identifiers: string[] },
+>(payload: U): Promise<T> {
+    const res = await ApiService.fetchDataWithAxios<any>({
+        url: '/v1/client/remove',
+        method: 'post',
+        data: payload,
+    })
+
+    return res as T
+}
