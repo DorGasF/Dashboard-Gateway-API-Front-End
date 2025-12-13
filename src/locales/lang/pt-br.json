@@ -104,6 +104,21 @@
             "toastNotAllowed": "Não é possível remover clientes que já foram atrelados a uma cobrança.",
             "toastError": "Não foi possível concluir a operação. Tente novamente."
         },
+        "customerKpi": {
+            "title": "Estatísticas dos Clientes",
+            "totalCustomers": "Total de Clientes",
+            "averageTicket": "Ticket Médio",
+            "activeCustomers": "Clientes Ativos",
+            "recurringCustomers": "Clientes Recorrentes",
+            "customersWithDisputes": "Clientes com Contestações",
+            "comparedLastMonth": "comparado ao mês passado"
+        },
+        "footer": {
+            "copyrightPrefix": "Copyright © {{year}}",
+            "copyrightSuffix": "Todos os direitos reservados.",
+            "terms": "Termos & Condições",
+            "privacy": "Política de Privacidade"
+        },
         "confirmDialog": {
             "cancel": "Cancelar",
             "confirm": "Confirmar"

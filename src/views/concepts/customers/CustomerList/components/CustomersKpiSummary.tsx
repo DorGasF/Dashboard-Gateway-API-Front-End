@@ -10,6 +10,7 @@ import {
     TbAlertTriangle,
 } from 'react-icons/tb'
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type SummarySegmentProps = {
     title: string
@@ -28,6 +29,7 @@ const SummarySegment = ({
     iconClass,
     className,
 }: SummarySegmentProps) => {
+    const { t } = useTranslation()
     const hasVariation = typeof growShrink === 'number'
 
     return (
@@ -45,7 +47,6 @@ const SummarySegment = ({
                 <div className="mb-1">{title}</div>
                 <h3 className="mb-1">{value}</h3>
 
-                {/* Área FIXA e padronizada */}
                 <div className="flex items-center gap-1 h-[22px]">
                     <GrowShrinkValue
                         className={classNames(
@@ -58,7 +59,7 @@ const SummarySegment = ({
                         negativeIcon=""
                     />
                     <span className={classNames(!hasVariation && 'opacity-0')}>
-                        comparado ao mês passado
+                        {t('nav.customerKpi.comparedLastMonth')}
                     </span>
                 </div>
             </div>
@@ -67,19 +68,21 @@ const SummarySegment = ({
 }
 
 const KpiSummary = () => {
+    const { t } = useTranslation()
+
     return (
         <Card>
             <div className="flex items-center justify-between">
-                <h4>Estatísticas dos Clientes</h4>
+                <h4>{t('nav.customerKpi.title')}</h4>
             </div>
 
             <div className="grid md:grid-cols-2 xl:grid-cols-5 mt-4">
                 <SummarySegment
-                    title="Total de Clientes"
+                    title={t('nav.customerKpi.totalCustomers')}
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={1903}
+                            value={0}
                             thousandSeparator
                         />
                     }
@@ -89,61 +92,61 @@ const KpiSummary = () => {
                 />
 
                 <SummarySegment
-                    title="Ticket Médio"
+                    title={t('nav.customerKpi.averageTicket')}
                     value={
                         <NumericFormat
                             prefix="$"
                             displayType="text"
-                            value={50}
+                            value={0}
                             thousandSeparator
                         />
                     }
-                    growShrink={12.5}
+                    growShrink={0}
                     icon={<TbTicket />}
                     iconClass="bg-emerald-200"
                     className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
                 />
 
                 <SummarySegment
-                    title="Clientes Ativos"
+                    title={t('nav.customerKpi.activeCustomers')}
                     value={
                         <NumericFormat
                             suffix="%"
                             displayType="text"
-                            value={32.8}
+                            value={0}
                         />
                     }
-                    growShrink={4.2}
+                    growShrink={0}
                     icon={<TbUsers />}
                     iconClass="bg-sky-200"
                     className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
                 />
 
                 <SummarySegment
-                    title="Clientes Recorrentes"
+                    title={t('nav.customerKpi.recurringCustomers')}
                     value={
                         <NumericFormat
                             suffix="%"
                             displayType="text"
-                            value={6.4}
+                            value={0}
                         />
                     }
-                    growShrink={-1.1}
+                    growShrink={0}
                     icon={<TbRepeat />}
                     iconClass="bg-teal-200"
                     className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
                 />
 
                 <SummarySegment
-                    title="Clientes com Contestações"
+                    title={t('nav.customerKpi.customersWithDisputes')}
                     value={
                         <NumericFormat
                             displayType="text"
-                            value={1280}
+                            value={0}
                             thousandSeparator
                         />
                     }
-                    growShrink={9.7}
+                    growShrink={0}
                     icon={<TbAlertTriangle />}
                     iconClass="bg-amber-200"
                     className="border-b md:border-b-0 border-gray-200 dark:border-gray-700"
