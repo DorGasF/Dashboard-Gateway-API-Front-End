@@ -2,12 +2,12 @@ import { useState } from 'react'
 import StickyFooter from '@/components/shared/StickyFooter'
 import Button from '@/components/ui/Button'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import useCustomerList from '../hooks/useCustomerList'
 import { TbChecks } from 'react-icons/tb'
 import { useTranslation } from 'react-i18next'
 import { apiRemoveCustomers } from '@/services/CustomersService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
+import { useCustomerListContext } from '../CustomerListProvider'
 
 const CustomerListSelected = () => {
     const { t } = useTranslation()
@@ -18,7 +18,7 @@ const CustomerListSelected = () => {
         mutate,
         customerListTotal,
         setSelectAllCustomer,
-    } = useCustomerList()
+    } = useCustomerListContext()
 
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false)
     const [loading, setLoading] = useState(false)

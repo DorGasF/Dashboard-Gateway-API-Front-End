@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import Tooltip from '@/components/ui/Tooltip'
 import DataTable from '@/components/shared/DataTable'
-import useCustomerList from '../hooks/useCustomerList'
+import { useCustomerListContext } from '../CustomerListProvider'
 import cloneDeep from 'lodash/cloneDeep'
 import { TbPencil } from 'react-icons/tb'
 import { useTranslation } from 'react-i18next'
@@ -15,9 +15,6 @@ import type { CustomerFormSchema } from '../../CustomerForm'
 import { apiCreateCustomer } from '@/services/CustomersService'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { useSWRConfig } from 'swr'
-import { buildQueryParams } from '../hooks/useCustomerList'
-import { useCustomerListStore } from '../store/customerListStore'
 
 const NameColumn = ({ row }: { row: Customer }) => (
     <div className="flex items-center">
@@ -47,18 +44,18 @@ const ActionColumn = ({ onEdit }: { onEdit: () => void }) => {
 
 const CustomerListTable = () => {
     const { t } = useTranslation()
-    const { mutate } = useSWRConfig()
-    const { tableData } = useCustomerListStore()
 
     const {
         customerList,
         customerListTotal,
         isLoading,
+        tableData,
         setTableData,
         setSelectAllCustomer,
         setSelectedCustomer,
         selectedCustomer,
-    } = useCustomerList()
+        mutate,
+    } = useCustomerListContext()
 
     const [dialogIsOpen, setDialogIsOpen] = useState(false)
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(
@@ -66,8 +63,6 @@ const CustomerListTable = () => {
     )
     const [saving, setSaving] = useState(false)
     const [formDirty, setFormDirty] = useState(false)
-
-    const buildKey = () => ['/api/customers', buildQueryParams(tableData)]
 
     const handleEdit = (customer: Customer) => {
         setEditingCustomer(customer)
@@ -143,7 +138,7 @@ const CustomerListTable = () => {
                 )
             }
 
-            mutate(buildKey())
+            await mutate()
             handleCloseDialog()
         } catch {
             toast.push(
@@ -284,7 +279,7 @@ const CustomerListTable = () => {
 
             <Dialog
                 isOpen={dialogIsOpen}
-                preventScroll={true}
+                preventScroll
                 style={{ content: { marginTop: 80 } }}
                 contentClassName="pb-0 px-0"
                 bodyOpenClassName="overflow-hidden"
@@ -302,7 +297,7 @@ const CustomerListTable = () => {
                                 defaultValues={defaultFormValues}
                                 onFormSubmit={handleSubmitEdit}
                                 onDirtyChange={setFormDirty}
-                                isModal={true}
+                                isModal
                             />
                         )}
                     </div>

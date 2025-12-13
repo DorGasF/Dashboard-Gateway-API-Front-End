@@ -1,9 +1,9 @@
-import useCustomerList from '../hooks/useCustomerList'
+import { useCustomerListContext } from '../CustomerListProvider'
 import CustomerListSearch from './CustomerListSearch'
 import cloneDeep from 'lodash/cloneDeep'
 
 const CustomersListTableTools = () => {
-    const { tableData, setTableData } = useCustomerList()
+    const { tableData, setTableData } = useCustomerListContext()
 
     const handleInputChange = (val: string) => {
         const newTableData = cloneDeep(tableData)

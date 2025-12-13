@@ -3,12 +3,10 @@ import Button from '@/components/ui/Button'
 import { TbUserPlus } from 'react-icons/tb'
 import CreateCustomerDialog from '@/views/customers/CreateCustomerDialog'
 import { apiCreateCustomer } from '@/services/CustomersService'
-import { useSWRConfig } from 'swr'
-import { useCustomerListStore } from '../store/customerListStore'
-import { buildQueryParams } from '../hooks/useCustomerList'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import { useTranslation } from 'react-i18next'
+import { useCustomerListContext } from '../CustomerListProvider'
 
 const translateBackendError = (code: string, t: any) => {
     return t(`nav.conceptsCustomers.backend.${code}`, {
@@ -21,10 +19,7 @@ const CustomerListActionTools = () => {
     const [open, setOpen] = useState(false)
     const [creating, setCreating] = useState(false)
 
-    const { mutate } = useSWRConfig()
-    const { tableData } = useCustomerListStore()
-
-    const buildKey = () => ['/api/customers', buildQueryParams(tableData)]
+    const { mutate } = useCustomerListContext()
 
     const mapPayloadToBackend = (form: any) => {
         const full_name =
@@ -125,7 +120,7 @@ const CustomerListActionTools = () => {
             return
         }
 
-        mutate(buildKey())
+        await mutate()
         setOpen(false)
 
         setTimeout(() => setCreating(false), 350)

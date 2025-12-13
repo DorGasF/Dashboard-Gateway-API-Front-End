@@ -116,9 +116,7 @@ function DataTable<T>(props: DataTableProps<T>) {
         onCheckBoxChange,
         onIndeterminateCheckBoxChange,
         onPaginationChange,
-        onSelectChange,
         onSort,
-        pageSizes = [10, 25, 50, 100],
         selectable = false,
         pagingData = {
             total: 0,
@@ -127,7 +125,6 @@ function DataTable<T>(props: DataTableProps<T>) {
         },
         checkboxChecked,
         indeterminateCheckboxChecked,
-        instanceId = 'data-table',
         ref,
         ...rest
     } = props
@@ -138,61 +135,73 @@ function DataTable<T>(props: DataTableProps<T>) {
 
     useEffect(() => {
         const sort = sorting[0]
-
-        if (!sort) {
-            onSort?.({ order: '', key: '' })
-            return
-        }
-
-        onSort?.({
-            order: sort.desc ? 'desc' : 'asc',
-            key: sort.id,
-        })
+        if (!sort) return
+        onSort?.({ order: sort.desc ? 'desc' : 'asc', key: sort.id })
     }, [sorting])
 
     const finalColumns: ColumnDef<T>[] = useMemo(() => {
         if (!selectable) return columnsProp
+
+        const hasSelectableData = Array.isArray(data) && data.length > 0
+
         return [
             {
                 id: 'select',
                 size: 50,
                 header: ({ table }) => (
-                    <IndeterminateCheckbox
-                        checked={
-                            indeterminateCheckboxChecked
-                                ? indeterminateCheckboxChecked(
-                                      table.getRowModel().rows,
-                                  )
-                                : table.getIsAllRowsSelected()
-                        }
-                        indeterminate={table.getIsSomeRowsSelected()}
-                        onChange={table.getToggleAllRowsSelectedHandler()}
-                        onIndeterminateCheckBoxChange={(e) =>
-                            onIndeterminateCheckBoxChange?.(
-                                e.target.checked,
-                                table.getRowModel().rows,
-                            )
-                        }
-                    />
+                    <div
+                        className={!hasSelectableData ? 'invisible' : undefined}
+                    >
+                        <IndeterminateCheckbox
+                            checked={
+                                indeterminateCheckboxChecked
+                                    ? indeterminateCheckboxChecked(
+                                          table.getRowModel().rows,
+                                      )
+                                    : table.getIsAllRowsSelected()
+                            }
+                            indeterminate={table.getIsSomeRowsSelected()}
+                            onChange={table.getToggleAllRowsSelectedHandler()}
+                            onIndeterminateCheckBoxChange={(e) =>
+                                onIndeterminateCheckBoxChange?.(
+                                    e.target.checked,
+                                    table.getRowModel().rows,
+                                )
+                            }
+                        />
+                    </div>
                 ),
                 cell: ({ row }) => (
-                    <IndeterminateCheckbox
-                        checked={
-                            checkboxChecked
-                                ? checkboxChecked(row.original)
-                                : row.getIsSelected()
-                        }
-                        indeterminate={row.getIsSomeSelected()}
-                        onChange={row.getToggleSelectedHandler()}
-                        onCheckBoxChange={(e) =>
-                            onCheckBoxChange?.(e.target.checked, row.original)
-                        }
-                    />
+                    <div
+                        className={!hasSelectableData ? 'invisible' : undefined}
+                    >
+                        <IndeterminateCheckbox
+                            checked={
+                                checkboxChecked
+                                    ? checkboxChecked(row.original)
+                                    : row.getIsSelected()
+                            }
+                            indeterminate={row.getIsSomeSelected()}
+                            onChange={row.getToggleSelectedHandler()}
+                            onCheckBoxChange={(e) =>
+                                onCheckBoxChange?.(
+                                    e.target.checked,
+                                    row.original,
+                                )
+                            }
+                        />
+                    </div>
                 ),
             },
             ...columnsProp,
         ]
-    }, [columnsProp, selectable, checkboxChecked, indeterminateCheckboxChecked])
+    }, [
+        columnsProp,
+        selectable,
+        data,
+        checkboxChecked,
+        indeterminateCheckboxChecked,
+    ])
 
     const table = useReactTable({
         data,
@@ -232,7 +241,7 @@ function DataTable<T>(props: DataTableProps<T>) {
                                         <div
                                             className={classNames(
                                                 header.column.getCanSort() &&
-                                                    'cursor-pointer select-none point',
+                                                    'cursor-pointer select-none',
                                                 loading &&
                                                     'pointer-events-none',
                                             )}
@@ -256,125 +265,93 @@ function DataTable<T>(props: DataTableProps<T>) {
                 </THead>
 
                 <TBody>
-                    {Array.from({ length: pageSize }).map((_, index) => {
-                        const row = table.getRowModel().rows[index]
-
-                        if (loading && data.length === 0) {
-                            return (
-                                <Tr
-                                    key={`skeleton-${index}`}
-                                    style={{ height: ROW_HEIGHT }}
+                    {noData ? (
+                        <>
+                            <Tr style={{ height: ROW_HEIGHT }}>
+                                <Td
+                                    colSpan={finalColumns.length}
+                                    rowSpan={pageSize}
                                 >
-                                    {finalColumns.map((_, col) => (
-                                        <Td
-                                            key={col}
-                                            style={{
-                                                width: table
-                                                    .getAllLeafColumns()
-                                                    [col]?.getSize(),
-                                                overflow: 'hidden',
-                                            }}
-                                        >
-                                            <Skeleton className="w-full" />
-                                        </Td>
-                                    ))}
-                                </Tr>
-                            )
-                        }
-
-                        if (noData && index === 0) {
-                            return (
-                                <Tr
-                                    key="no-data"
-                                    style={{ height: ROW_HEIGHT }}
-                                >
-                                    <Td colSpan={finalColumns.length}>
-                                        <div className="flex flex-col items-center gap-4">
-                                            {customNoDataIcon ?? (
-                                                <>
-                                                    <FileNotFound />
-                                                    <span className="font-semibold">
-                                                        {t(
-                                                            'nav.pagination.noData',
-                                                        )}
-                                                    </span>
-                                                </>
-                                            )}
-                                        </div>
-                                    </Td>
-                                </Tr>
-                            )
-                        }
-
-                        return (
-                            <Tr
-                                key={row?.id ?? `empty-${index}`}
-                                style={{ height: ROW_HEIGHT }}
-                            >
-                                {finalColumns.map((_, colIndex) => {
-                                    const cell =
-                                        row?.getVisibleCells()[colIndex]
-                                    const isSelectColumn =
-                                        cell?.column.id === 'select'
-
-                                    return (
-                                        <Td
-                                            key={colIndex}
-                                            style={{
-                                                width: cell?.column.getSize(),
-                                                minWidth:
-                                                    cell?.column.getSize(),
-                                                maxWidth:
-                                                    cell?.column.getSize(),
-                                            }}
-                                        >
-                                            {cell ? (
-                                                isSelectColumn ? (
-                                                    flexRender(
-                                                        cell.column.columnDef
-                                                            .cell,
-                                                        cell.getContext(),
-                                                    )
-                                                ) : (
-                                                    <div
-                                                        style={{
-                                                            width: '100%',
-                                                            overflow: 'hidden',
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                            textOverflow:
-                                                                'ellipsis',
-                                                        }}
-                                                    >
-                                                        {flexRender(
-                                                            cell.column
-                                                                .columnDef.cell,
-                                                            cell.getContext(),
-                                                        )}
-                                                    </div>
-                                                )
-                                            ) : null}
-                                        </Td>
-                                    )
-                                })}
+                                    <div className="flex flex-col items-center justify-center gap-4 h-full">
+                                        {customNoDataIcon ?? (
+                                            <>
+                                                <FileNotFound />
+                                                <span className="font-semibold">
+                                                    {t('nav.pagination.noData')}
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                </Td>
                             </Tr>
-                        )
-                    })}
+
+                            {Array.from({ length: pageSize - 1 }).map(
+                                (_, i) => (
+                                    <Tr
+                                        key={`no-data-row-${i}`}
+                                        style={{ height: ROW_HEIGHT }}
+                                    />
+                                ),
+                            )}
+                        </>
+                    ) : (
+                        Array.from({ length: pageSize }).map((_, index) => {
+                            const row = table.getRowModel().rows[index]
+
+                            if (loading && data.length === 0) {
+                                return (
+                                    <Tr
+                                        key={`skeleton-${index}`}
+                                        style={{ height: ROW_HEIGHT }}
+                                    >
+                                        {finalColumns.map((_, col) => (
+                                            <Td key={col}>
+                                                <Skeleton className="w-full" />
+                                            </Td>
+                                        ))}
+                                    </Tr>
+                                )
+                            }
+
+                            return (
+                                <Tr
+                                    key={row?.id ?? `empty-${index}`}
+                                    style={{ height: ROW_HEIGHT }}
+                                >
+                                    {finalColumns.map((_, colIndex) => {
+                                        const cell =
+                                            row?.getVisibleCells()[colIndex]
+                                        return (
+                                            <Td key={colIndex}>
+                                                {cell
+                                                    ? flexRender(
+                                                          cell.column.columnDef
+                                                              .cell,
+                                                          cell.getContext(),
+                                                      )
+                                                    : null}
+                                            </Td>
+                                        )
+                                    })}
+                                </Tr>
+                            )
+                        })
+                    )}
                 </TBody>
             </Table>
 
             <div
-                className="flex items-center justify-between mt-4"
-                style={{ minHeight: 40 }}
-            >
-                {!loading && total > pageSize && (
-                    <Pagination
-                        pageSize={pageSize}
-                        currentPage={pageIndex}
-                        total={total}
-                        onChange={onPaginationChange}
-                    />
+                className={classNames(
+                    'flex items-center justify-between mt-4',
+                    !(!noData && !loading && total > pageSize) && 'invisible',
                 )}
+            >
+                <Pagination
+                    pageSize={pageSize}
+                    currentPage={pageIndex}
+                    total={total}
+                    onChange={onPaginationChange}
+                />
             </div>
         </Loading>
     )

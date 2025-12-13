@@ -6,12 +6,13 @@ import CustomersListTableTools from './components/CustomersListTableTools'
 import CustomerListSelected from './components/CustomerListSelected'
 import { useTranslation } from 'react-i18next'
 import CustomersKpiSummary from './components/CustomersKpiSummary'
+import { CustomerListProvider } from './CustomerListProvider'
 
 const CustomerList = () => {
     const { t } = useTranslation()
 
     return (
-        <>
+        <CustomerListProvider>
             <Container>
                 <div className="mb-5">
                     <CustomersKpiSummary />
@@ -23,6 +24,7 @@ const CustomerList = () => {
                             <h3>{t('nav.conceptsCustomers.customers')}</h3>
                             <CustomerListActionTools />
                         </div>
+
                         <CustomersListTableTools />
                         <CustomerListTable />
                     </div>
@@ -30,7 +32,7 @@ const CustomerList = () => {
             </Container>
 
             <CustomerListSelected />
-        </>
+        </CustomerListProvider>
     )
 }
 

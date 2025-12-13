@@ -3,6 +3,11 @@ export type GetCustomersListResponse = {
     total: number
 }
 
+export type Filter = {
+    purchasedProducts: string
+    purchaseChannel: Array<string>
+}
+
 export type Customer = {
     id: string
     name: string
