@@ -177,7 +177,7 @@ const CustomerEdit = () => {
                     <Notification type="success">
                         {t('nav.customerEdit.toastCustomerDeleted')}
                     </Notification>,
-                    { placement: 'top-center' },
+                    { placement: 'bottom-end' },
                 )
                 navigate('/concepts/customers/customer-list')
                 return

@@ -125,8 +125,20 @@ const CustomerListTable = () => {
     }
 
     const handleSort = (sort: OnSortParam) => {
+        const normalizedSort: OnSortParam = {
+            key: sort.key,
+            order: sort.order === 'asc' ? 'desc' : 'asc',
+        }
+
+        if (
+            tableData.sort?.key === normalizedSort.key &&
+            tableData.sort?.order === normalizedSort.order
+        ) {
+            return
+        }
+
         const newTableData = cloneDeep(tableData)
-        newTableData.sort = sort
+        newTableData.sort = normalizedSort
         handleSetTableData(newTableData)
     }
 
