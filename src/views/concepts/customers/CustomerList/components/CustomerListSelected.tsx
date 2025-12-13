@@ -35,7 +35,7 @@ const CustomerListSelected = () => {
     }
 
     const handleConfirmDelete = async () => {
-        if (selectedCustomer.length === 0) return
+        if (!selectedCustomer.length) return
 
         setLoading(true)
 
@@ -44,7 +44,7 @@ const CustomerListSelected = () => {
                 .map((c) => c.id)
                 .filter((id): id is string => Boolean(id))
 
-            if (identifiers.length === 0) {
+            if (!identifiers.length) {
                 setDeleteConfirmationOpen(false)
                 return
             }
@@ -59,21 +59,22 @@ const CustomerListSelected = () => {
             const removed = response?.data?.removed ?? []
             const blocked = response?.data?.blocked ?? []
 
-            if (removed.length > 0) {
-                const newCustomerList = customerList.filter(
+            if (removed.length) {
+                const newTotal = customerListTotal - removed.length
+                const newList = customerList.filter(
                     (customer) => !removed.includes(customer.id as string),
                 )
 
-                mutate(
-                    {
-                        list: newCustomerList,
-                        total: customerListTotal - removed.length,
-                    },
-                    false,
-                )
+                if (newList.length === 0 && newTotal > 0) {
+                    // Página ficou vazia → revalidação obrigatória
+                    await mutate()
+                } else {
+                    // Atualização local rápida
+                    mutate({ list: newList, total: newTotal }, false)
+                }
             }
 
-            if (removed.length > 0 && blocked.length === 0) {
+            if (removed.length && !blocked.length) {
                 toast.push(
                     <Notification type="success">
                         {t(
@@ -85,7 +86,7 @@ const CustomerListSelected = () => {
                     </Notification>,
                     { placement: 'bottom-end' },
                 )
-            } else if (removed.length > 0 && blocked.length > 0) {
+            } else if (removed.length && blocked.length) {
                 toast.push(
                     <Notification type="warning">
                         {t(

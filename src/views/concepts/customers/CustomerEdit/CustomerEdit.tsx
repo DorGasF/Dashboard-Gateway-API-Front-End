@@ -4,7 +4,11 @@ import Button from '@/components/ui/Button'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import { apiGetCustomer, apiCreateCustomer } from '@/services/CustomersService'
+import {
+    apiGetCustomer,
+    apiCreateCustomer,
+    apiRemoveCustomers,
+} from '@/services/CustomersService'
 import CustomerForm from '../CustomerForm'
 import { TbTrash, TbArrowNarrowLeft } from 'react-icons/tb'
 import { useParams, useNavigate } from 'react-router'
@@ -60,25 +64,22 @@ const CustomerEdit = () => {
 
     const handleSave = async (payload: CustomerFormSchema) => {
         try {
-            const mapped = mapPayloadToBackend(payload)
-
             const resp = await apiCreateCustomer<{
                 message: { type: string; message: string; code: string }
                 data?: any
-            }>(mapped)
+            }>(mapPayloadToBackend(payload))
 
             const code = resp?.message?.code
             const isError = resp?.message?.type === 'error'
             const nome = resp?.data?.full_name
 
             if (isError) {
-                const text = translateBackendError(code, t)
                 toast.push(
                     <Notification
                         title={t('nav.conceptsCustomers.error')}
                         type="danger"
                     >
-                        {text}
+                        {translateBackendError(code, t)}
                     </Notification>,
                     { placement: 'bottom-end' },
                 )
@@ -118,7 +119,6 @@ const CustomerEdit = () => {
         setIsSubmitting(true)
 
         const ok = await handleSave(values)
-
         if (!ok) {
             setIsSubmitting(false)
             return
@@ -131,7 +131,6 @@ const CustomerEdit = () => {
         }
 
         navigate('/concepts/customers/customer-list')
-
         setTimeout(() => setIsSubmitting(false), 350)
     }
 
@@ -160,17 +159,46 @@ const CustomerEdit = () => {
     const handleDelete = () => setDeleteConfirmationOpen(true)
     const handleCancel = () => setDeleteConfirmationOpen(false)
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
+        if (!id) return
+
         setDeleteConfirmationOpen(false)
 
-        toast.push(
-            <Notification type="success">
-                {t('nav.customerEdit.toastCustomerDeleted')}
-            </Notification>,
-            { placement: 'top-center' },
-        )
+        try {
+            const response = await apiRemoveCustomers<{
+                data: { removed: string[]; blocked: string[] }
+            }>({ identifiers: [id] })
 
-        navigate('/concepts/customers/customer-list')
+            const removed = response?.data?.removed ?? []
+            const blocked = response?.data?.blocked ?? []
+
+            if (removed.length === 1) {
+                toast.push(
+                    <Notification type="success">
+                        {t('nav.customerEdit.toastCustomerDeleted')}
+                    </Notification>,
+                    { placement: 'top-center' },
+                )
+                navigate('/concepts/customers/customer-list')
+                return
+            }
+
+            if (blocked.length === 1) {
+                toast.push(
+                    <Notification type="warning">
+                        {t('nav.customerListSelected.toastNotAllowed')}
+                    </Notification>,
+                    { placement: 'bottom-end' },
+                )
+            }
+        } catch {
+            toast.push(
+                <Notification type="danger">
+                    {t('nav.customerListSelected.toastError')}
+                </Notification>,
+                { placement: 'bottom-end' },
+            )
+        }
     }
 
     const buttonsDisabled = isLoading || !data || isSubmitting || !hasChanges
