@@ -324,6 +324,9 @@ function DataTable<T>(props: DataTableProps<T>) {
                                 {finalColumns.map((_, colIndex) => {
                                     const cell =
                                         row?.getVisibleCells()[colIndex]
+                                    const isSelectColumn =
+                                        cell?.column.id === 'select'
+
                                     return (
                                         <Td
                                             key={colIndex}
@@ -333,18 +336,34 @@ function DataTable<T>(props: DataTableProps<T>) {
                                                     cell?.column.getSize(),
                                                 maxWidth:
                                                     cell?.column.getSize(),
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
                                             }}
                                         >
-                                            {cell
-                                                ? flexRender(
-                                                      cell.column.columnDef
-                                                          .cell,
-                                                      cell.getContext(),
-                                                  )
-                                                : null}
+                                            {cell ? (
+                                                isSelectColumn ? (
+                                                    flexRender(
+                                                        cell.column.columnDef
+                                                            .cell,
+                                                        cell.getContext(),
+                                                    )
+                                                ) : (
+                                                    <div
+                                                        style={{
+                                                            width: '100%',
+                                                            overflow: 'hidden',
+                                                            whiteSpace:
+                                                                'nowrap',
+                                                            textOverflow:
+                                                                'ellipsis',
+                                                        }}
+                                                    >
+                                                        {flexRender(
+                                                            cell.column
+                                                                .columnDef.cell,
+                                                            cell.getContext(),
+                                                        )}
+                                                    </div>
+                                                )
+                                            ) : null}
                                         </Td>
                                     )
                                 })}
