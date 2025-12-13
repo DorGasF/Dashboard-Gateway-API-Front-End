@@ -68,7 +68,7 @@ const CustomerListActionTools = () => {
                     >
                         {text}
                     </Notification>,
-                    { placement: 'bottom-end' },
+                    { placement: 'bottom-start' },
                 )
                 return { status: 'failed', message: text }
             }
@@ -83,7 +83,7 @@ const CustomerListActionTools = () => {
                             name: nome,
                         })}
                     </Notification>,
-                    { placement: 'bottom-end' },
+                    { placement: 'bottom-start' },
                 )
             } else if (code === 'CLIENT_UPDATED') {
                 toast.push(
@@ -95,7 +95,7 @@ const CustomerListActionTools = () => {
                             name: nome,
                         })}
                     </Notification>,
-                    { placement: 'bottom-end' },
+                    { placement: 'bottom-start' },
                 )
             }
 
@@ -109,7 +109,7 @@ const CustomerListActionTools = () => {
                 >
                     {text}
                 </Notification>,
-                { placement: 'bottom-end' },
+                { placement: 'bottom-start' },
             )
             return { status: 'failed', message: text }
         }

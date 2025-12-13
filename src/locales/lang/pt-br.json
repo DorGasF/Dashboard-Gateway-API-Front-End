@@ -135,6 +135,11 @@
             "cancelButton": "Cancelar",
             "createButton": "Criar Cliente"
         },
+        "editCustomerDialog": {
+            "title": "Editar dados do Cliente",
+            "cancelButton": "Cancelar",
+            "saveButton": "Salvar Alterações"
+        },
         "customerForm": {
             "overviewTitle": "Visão Geral",
             "firstName": "Nome",

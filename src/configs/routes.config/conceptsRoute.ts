@@ -13,23 +13,6 @@ const conceptsRoute: Routes = [
         authority: [ADMIN, USER],
     },
     {
-        key: 'concepts.customers.customerEdit',
-        path: `${CONCEPTS_PREFIX_PATH}/customers/customer-edit/:id`,
-        component: lazy(
-            () => import('@/views/concepts/customers/CustomerEdit'),
-        ),
-        authority: [ADMIN, USER],
-        meta: {
-            header: {
-                title: 'Edit customer',
-                description:
-                    'Manage customer details, purchase history, and preferences.',
-                contained: true,
-            },
-            footer: false,
-        },
-    },
-    {
         key: 'concepts.customers.customerCreate',
         path: `${CONCEPTS_PREFIX_PATH}/customers/customer-create`,
         component: lazy(

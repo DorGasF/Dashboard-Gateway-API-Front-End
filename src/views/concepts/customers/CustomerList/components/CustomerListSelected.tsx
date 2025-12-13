@@ -82,7 +82,7 @@ const CustomerListSelected = () => {
                             { count: removed.length },
                         )}
                     </Notification>,
-                    { placement: 'bottom-end' },
+                    { placement: 'bottom-start' },
                 )
             } else if (removed.length && blocked.length) {
                 toast.push(
@@ -102,14 +102,14 @@ const CustomerListSelected = () => {
                         )}
                         .
                     </Notification>,
-                    { placement: 'bottom-end' },
+                    { placement: 'bottom-start' },
                 )
             } else {
                 toast.push(
                     <Notification type="danger">
                         {t('nav.customerListSelected.toastNotAllowed')}
                     </Notification>,
-                    { placement: 'bottom-end' },
+                    { placement: 'bottom-start' },
                 )
             }
 
@@ -120,7 +120,7 @@ const CustomerListSelected = () => {
                 <Notification type="danger">
                     {t('nav.customerListSelected.toastError')}
                 </Notification>,
-                { placement: 'bottom-end' },
+                { placement: 'bottom-start' },
             )
         } finally {
             setLoading(false)
