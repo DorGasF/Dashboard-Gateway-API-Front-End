@@ -1,10 +1,11 @@
 import { useRef, useState, useEffect, ReactNode } from 'react'
 import classNames from 'classnames'
-import useDebounce from '@/utils/hooks/useDebounce'
 import type { HTMLAttributes } from 'react'
 
-interface StickyFooterProps
-    extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+interface StickyFooterProps extends Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'children'
+> {
     stickyClass?: string
     defaultClass?: string
     children?: ReactNode | ((isSticky: boolean) => ReactNode)
@@ -14,56 +15,47 @@ const StickyFooter = (props: StickyFooterProps) => {
     const { children, className, stickyClass, defaultClass, ...rest } = props
 
     const [isSticky, setIsSticky] = useState(false)
-    const ref = useRef<HTMLDivElement>(null)
-
-    function handleDebounceFn(val: boolean) {
-        setIsSticky(val)
-    }
-
-    const debounceFn = useDebounce(handleDebounceFn, 100)
+    const sentinelRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const cachedRef = ref.current
+        const sentinel = sentinelRef.current
+        if (!sentinel) return
+
         const observer = new IntersectionObserver(
-            ([e]) => {
-                console.log(
-                    'e.intersectionRatio < 1',
-                    e.intersectionRatio,
-                    e.intersectionRatio < 1,
-                )
-                if (!(e.intersectionRatio < 1)) {
-                    window.scrollTo({
-                        top: document.body.scrollHeight - 1,
-                        behavior: 'smooth',
-                    })
-                }
-                debounceFn(e.intersectionRatio < 1)
+            (entries) => {
+                const entry = entries[0]
+                if (!entry) return
+                setIsSticky(!entry.isIntersecting)
             },
             {
-                threshold: [1],
+                threshold: 0,
             },
         )
 
-        observer.observe(cachedRef as Element)
-
-        return function () {
-            observer.unobserve(cachedRef as Element)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        observer.observe(sentinel)
+        return () => observer.disconnect()
     }, [])
 
     return (
-        <div
-            ref={ref}
-            className={classNames(
-                'static -bottom-[1px]',
-                className,
-                isSticky ? classNames(stickyClass, 'sticky') : defaultClass,
-            )}
-            {...rest}
-        >
-            {typeof children === 'function' ? children(isSticky) : children}
-        </div>
+        <>
+            {/* Sentinel invisível */}
+            <div ref={sentinelRef} className="h-px w-full" />
+
+            <div
+                className={classNames(
+                    className,
+                    isSticky
+                        ? classNames(
+                              'sticky bottom-0 z-[60] bg-white dark:bg-gray-800',
+                              stickyClass,
+                          )
+                        : defaultClass,
+                )}
+                {...rest}
+            >
+                {typeof children === 'function' ? children(isSticky) : children}
+            </div>
+        </>
     )
 }
 

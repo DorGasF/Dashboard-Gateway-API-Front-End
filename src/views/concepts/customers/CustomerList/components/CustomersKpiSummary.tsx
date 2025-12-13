@@ -3,17 +3,18 @@ import GrowShrinkValue from '@/components/shared/GrowShrinkValue'
 import classNames from '@/utils/classNames'
 import { NumericFormat } from 'react-number-format'
 import {
-    TbMoneybag,
-    TbReportMoney,
-    TbRefreshAlert,
-    TbMagnet,
+    TbTicket,
+    TbUsers,
+    TbUsersGroup,
+    TbRepeat,
+    TbAlertTriangle,
 } from 'react-icons/tb'
 import type { ReactNode } from 'react'
 
 type SummarySegmentProps = {
     title: string
     value: string | number | ReactNode
-    growShrink: number
+    growShrink?: number
     icon: ReactNode
     iconClass: string
     className?: string
@@ -27,6 +28,8 @@ const SummarySegment = ({
     iconClass,
     className,
 }: SummarySegmentProps) => {
+    const hasVariation = typeof growShrink === 'number'
+
     return (
         <div className={classNames('flex flex-col gap-2 py-4 px-6', className)}>
             <div
@@ -37,18 +40,26 @@ const SummarySegment = ({
             >
                 {icon}
             </div>
+
             <div className="mt-4">
                 <div className="mb-1">{title}</div>
                 <h3 className="mb-1">{value}</h3>
-                <div className="inline-flex items-center flex-wrap gap-1">
+
+                {/* Área FIXA e padronizada */}
+                <div className="flex items-center gap-1 h-[22px]">
                     <GrowShrinkValue
-                        className="font-bold"
-                        value={growShrink}
+                        className={classNames(
+                            'font-bold',
+                            !hasVariation && 'opacity-0',
+                        )}
+                        value={growShrink ?? 0}
                         suffix="%"
                         positiveIcon="+"
                         negativeIcon=""
                     />
-                    <span>vs last month</span>
+                    <span className={classNames(!hasVariation && 'opacity-0')}>
+                        comparado ao mês passado
+                    </span>
                 </div>
             </div>
         </div>
@@ -59,60 +70,72 @@ const KpiSummary = () => {
     return (
         <Card>
             <div className="flex items-center justify-between">
-                <h4>Kpi summary</h4>
+                <h4>Estatísticas dos Clientes</h4>
             </div>
 
-            <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4 mt-4">
+            <div className="grid md:grid-cols-2 xl:grid-cols-5 mt-4">
                 <SummarySegment
-                    title="Total marketing spend"
+                    title="Total de Clientes"
+                    value={
+                        <NumericFormat
+                            displayType="text"
+                            value={1903}
+                            thousandSeparator
+                        />
+                    }
+                    icon={<TbUsersGroup />}
+                    iconClass="bg-orange-200"
+                    className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
+                />
+
+                <SummarySegment
+                    title="Ticket Médio"
                     value={
                         <NumericFormat
                             prefix="$"
                             displayType="text"
-                            value={50000}
+                            value={50}
                             thousandSeparator
                         />
                     }
                     growShrink={12.5}
-                    icon={<TbMoneybag />}
-                    iconClass="bg-rose-200"
-                    className="border-b border-r-0 md:border-b-0 md:ltr:border-r md:rtl:border-l border-gray-200 dark:border-gray-700"
+                    icon={<TbTicket />}
+                    iconClass="bg-emerald-200"
+                    className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
                 />
 
                 <SummarySegment
-                    title="ROI"
+                    title="Clientes Ativos"
                     value={
                         <NumericFormat
                             suffix="%"
                             displayType="text"
                             value={32.8}
-                            thousandSeparator
                         />
                     }
                     growShrink={4.2}
-                    icon={<TbReportMoney />}
+                    icon={<TbUsers />}
                     iconClass="bg-sky-200"
                     className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
                 />
 
                 <SummarySegment
-                    title="Conversion rates"
+                    title="Clientes Recorrentes"
                     value={
                         <NumericFormat
                             suffix="%"
                             displayType="text"
                             value={6.4}
-                            thousandSeparator
                         />
                     }
                     growShrink={-1.1}
-                    icon={<TbRefreshAlert />}
-                    iconClass="bg-emerald-200"
-                    className="border-b border-r-0 md:border-b-0 md:ltr:border-r md:rtl:border-l border-gray-200 dark:border-gray-700"
+                    icon={<TbRepeat />}
+                    iconClass="bg-teal-200"
+                    className="border-b md:border-b-0 xl:ltr:border-r xl:rtl:border-l border-gray-200 dark:border-gray-700"
                 />
 
                 <SummarySegment
-                    title="Total leads"
+                    title="Clientes com Contestações"
                     value={
                         <NumericFormat
                             displayType="text"
@@ -121,8 +144,9 @@ const KpiSummary = () => {
                         />
                     }
                     growShrink={9.7}
-                    icon={<TbMagnet />}
-                    iconClass="bg-purple-200"
+                    icon={<TbAlertTriangle />}
+                    iconClass="bg-amber-200"
+                    className="border-b md:border-b-0 border-gray-200 dark:border-gray-700"
                 />
             </div>
         </Card>

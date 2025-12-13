@@ -8,7 +8,6 @@ import {
 import classNames from 'classnames'
 import Table from '@/components/ui/Table'
 import Pagination from '@/components/ui/Pagination'
-import Select from '@/components/ui/Select'
 import Checkbox from '@/components/ui/Checkbox'
 import Loading from './Loading'
 import FileNotFound from '@/assets/svg/FileNotFound'
@@ -136,15 +135,6 @@ function DataTable<T>(props: DataTableProps<T>) {
     const { pageSize, pageIndex, total } = pagingData
     const [sorting, setSorting] = useState<ColumnSort[]>([])
     const { t } = useTranslation()
-
-    const pageSizeOption = useMemo(
-        () =>
-            pageSizes.map((number) => ({
-                value: number,
-                label: `${number} / ${t('nav.pagination.itemsPerPage')}`,
-            })),
-        [pageSizes, t],
-    )
 
     useEffect(() => {
         const sort = sorting[0]
@@ -373,28 +363,18 @@ function DataTable<T>(props: DataTableProps<T>) {
                 </TBody>
             </Table>
 
-            <div className="flex items-center justify-between mt-4">
-                <Pagination
-                    pageSize={pageSize}
-                    currentPage={pageIndex}
-                    total={total}
-                    onChange={onPaginationChange}
-                />
-                <div style={{ minWidth: 130 }}>
-                    <Select
-                        instanceId={instanceId}
-                        size="sm"
-                        menuPlacement="top"
-                        isSearchable={false}
-                        value={pageSizeOption.filter(
-                            (option) => option.value === pageSize,
-                        )}
-                        options={pageSizeOption}
-                        onChange={(option) =>
-                            onSelectChange?.(Number(option?.value))
-                        }
+            <div
+                className="flex items-center justify-between mt-4"
+                style={{ minHeight: 40 }}
+            >
+                {!loading && total > pageSize && (
+                    <Pagination
+                        pageSize={pageSize}
+                        currentPage={pageIndex}
+                        total={total}
+                        onChange={onPaginationChange}
                     />
-                </div>
+                )}
             </div>
         </Loading>
     )
