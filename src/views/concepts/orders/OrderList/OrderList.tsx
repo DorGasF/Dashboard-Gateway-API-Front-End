@@ -3,10 +3,15 @@ import AdaptiveCard from '@/components/shared/AdaptiveCard'
 import OrderListTable from './components/OrderListTable'
 import OrderListActionTools from './components/OrderListActionTools'
 import OrderListTableTools from './components/OrderListTableTools'
+import OrderListKpiSummary from './components/OrderListKpiSummary'
 
 const OrderList = () => {
     return (
         <Container>
+            <div className="mb-5">
+                <OrderListKpiSummary />
+            </div>
+
             <AdaptiveCard>
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
